@@ -11,7 +11,7 @@ window.SITE_DATA = {
     founded: 2000,
     foundedText: "民國 89 年（西元 2000 年）1 月",
     chairman: "游慶隆",
-    staff: 9,
+    team: "北中南皆有配合團隊，全台工地都能施作",
     taxId: "25155135",
     address: "桃園市中壢區龍勇路113號1樓",
     phone: "0987-332-776",

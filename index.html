@@ -34,7 +34,6 @@
   "openingHours": "Mo-Su 00:00-23:59",
   "sameAs": ["https://line.me/R/ti/p/@498csdar"],
   "founder": {"@type": "Person", "name": "游慶隆"},
-  "numberOfEmployees": {"@type": "QuantitativeValue", "value": 9},
   "address": {"@type": "PostalAddress", "streetAddress": "龍勇路113號1樓", "addressLocality": "中壢區", "addressRegion": "桃園市", "addressCountry": "TW"},
   "areaServed": {"@type": "Country", "name": "台灣"},
   "knowsAbout": ["音響工程", "影音系統整合", "公共廣播系統", "視訊會議系統", "KTV 音響", "家庭劇院", "室內裝修"]
@@ -549,7 +548,7 @@ footer img{height:28px;width:auto}
   $('aboutLead').textContent = '從建案公設、辦公大樓、商業娛樂空間到私人住宅，管線規劃、報價、施工與調校都由自己的團隊完成，實作案件遍佈全台。';
   $('intro').innerHTML = (C.intro||[]).map(function(t){ return '<p>'+esc(t)+'</p>'; }).join('');
   $('values').innerHTML = C.values.map(function(v){ return '<span>'+esc(v)+'</span>'; }).join('');
-  $('aboutSpec').innerHTML = [['成立', C.foundedText], ['董事長', C.chairman+' 先生'], ['團隊', '現有員工 '+C.staff+' 人，專業技術團隊'], ['總部', C.address], ['營業', C.hours], ['統一編號', C.taxId]]
+  $('aboutSpec').innerHTML = [['成立', C.foundedText], ['董事長', C.chairman+' 先生'], ['團隊', C.team || '北中南皆有配合團隊，全台工地都能施作'], ['總部', C.address], ['營業', C.hours], ['統一編號', C.taxId]]
     .map(function(r){ return '<dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd>'; }).join('');
 
   // 服務

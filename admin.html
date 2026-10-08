@@ -236,7 +236,7 @@ textarea.inp{min-height:90px;resize:vertical}
 
   function renderCompany(){
     var C = D.company;
-    var F = [['name','公司全名'],['shortName','網站顯示名稱'],['tagline','首頁標語'],['foundedText','成立時間（文字）'],['founded','成立年份（數字）'],['chairman','董事長'],['staff','員工人數'],['taxId','統一編號'],['address','地址'],['phone','電話'],['email','Email'],['line','LINE ID'],['lineUrl','LINE 加好友連結'],['hours','營業時間']];
+    var F = [['name','公司全名'],['shortName','網站顯示名稱'],['tagline','首頁標語'],['foundedText','成立時間（文字）'],['founded','成立年份（數字）'],['chairman','董事長'],['team','團隊說明'],['taxId','統一編號'],['address','地址'],['phone','電話'],['email','Email'],['line','LINE ID'],['lineUrl','LINE 加好友連結'],['hours','營業時間']];
     $('main').innerHTML = '<h2>公司資訊</h2><p class="hint">標示「待提供」的欄位請補上正式資料。</p><form class="form" id="cform" style="position:static;max-width:640px">'+
       F.map(function(f){ return '<label for="c_'+f[0]+'">'+f[1]+'<input class="inp" id="c_'+f[0]+'" data-f="'+f[0]+'" value="'+esc(C[f[0]])+'"></label>'; }).join('')+
       '<label for="c_intro">公司簡介（一行一段）<textarea class="inp" id="c_intro" style="min-height:220px">'+esc((C.intro||[]).join('\n'))+'</textarea></label>'+
@@ -246,7 +246,7 @@ textarea.inp{min-height:90px;resize:vertical}
       '<div class="actions"><button class="btn gold" type="submit">套用修改</button></div></form>';
     $('cform').addEventListener('submit', function(e){
       e.preventDefault();
-      [].forEach.call(this.querySelectorAll('[data-f]'), function(el){ var k=el.dataset.f; C[k] = (k==='founded'||k==='staff') ? (parseInt(el.value,10)||0) : el.value.trim(); });
+      [].forEach.call(this.querySelectorAll('[data-f]'), function(el){ var k=el.dataset.f; C[k] = (k==='founded') ? (parseInt(el.value,10)||0) : el.value.trim(); });
       C.intro = $('c_intro').value.split('\n').map(function(x){return x.trim();}).filter(Boolean);
       C.values = $('c_values').value.split(/[,，、]/).map(function(x){return x.trim();}).filter(Boolean);
       D.chatGreeting = $('c_greet').value.trim(); D.chatFallback = $('c_fb').value.trim();

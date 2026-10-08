@@ -194,7 +194,7 @@ window.SITE_DATA = {
     ],
     amps: [
       { id: "a150", name: "MUSICAL 150W 公共廣播擴大機", maxSpeakers: 8, price: 15000 },
-      { id: "a250", name: "MUSICAL 250W 公共廣播擴大機（五區、藍芽 USB）", maxSpeakers: 20, price: 25000 },
+      { id: "a250", name: "MUSICAL 250W 公共廣播擴大機（五區、內建藍芽 USB）", maxSpeakers: 20, price: 25000 },
       { id: "a350", name: "MUSICAL 350W 公共廣播擴大機", maxSpeakers: 30, price: 35000 },
       { id: "a5z", name: "MUSICAL 五區公共廣播擴大機", maxSpeakers: 999, price: 47000 }
     ],
@@ -216,7 +216,6 @@ window.SITE_DATA = {
         ["KARMEN 8 吋壁掛喇叭 SP-3080", 1, "對", 15000, "壁掛喇叭"],
         ["KARMEN MU-200 無線麥克風", 1, "組", 8500, "無線麥克風"],
         ["喇叭吊架", 1, "對", 1200],
-        ["藍芽、USB 撥放器", 1, "個", 2000, "藍芽／USB 撥放器"],
         ["配線、線材、安裝測試", 1, "式", 18000]
       ] },
       { id: "hall", name: "大教室／講堂／活動場地", mode: "pack", items: [
@@ -225,7 +224,6 @@ window.SITE_DATA = {
         ["KARMEN MU-600 無線麥克風", 2, "組", 15000, "無線麥克風"],
         ["HDMI 四入傳輸分配器", 1, "個", 6000, "影像訊號分配器"],
         ["喇叭吊架", 1, "對", 1200],
-        ["藍芽、USB 撥放器", 1, "個", 2000, "藍芽／USB 撥放器"],
         ["配線、線材、安裝測試", 1, "式", 25000]
       ] },
       { id: "ktv", name: "KTV 包廂", mode: "pack", items: [
@@ -251,8 +249,7 @@ window.SITE_DATA = {
     ],
     bgmOptions: [
       { id: "vol", name: "音量控制開關", unit: "只", price: 1250 },
-      { id: "mic", name: "無線麥克風", unit: "組", price: 15000 },
-      { id: "bt", name: "藍芽／USB 撥放器", unit: "個", price: 2000 }
+      { id: "mic", name: "無線麥克風", unit: "組", price: 15000 }
     ],
     extras: [
       { id: "tv", name: "75 吋電視（含壁架、安裝）", unit: "台", price: 63000 },

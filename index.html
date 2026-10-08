@@ -7,27 +7,27 @@
 <meta name="description" content="悅聲專業音響有限公司，桃園中壢深耕音響工程二十餘年，24 小時營業。建案公設音響、辦公大樓視訊會議、代銷接待中心、招待所、KTV、電影院、家庭劇院，並承接家具與室內裝修工程。服務興富發、甲山林、潤隆、達麗、寶佳等建設集團。">
 <meta name="keywords" content="音響工程,影音系統整合,建案公設音響,會議室音響,宴會廳音響,公共廣播系統,視聽室,家庭劇院,桃園音響工程,中壢音響,悅聲專業音響">
 <meta name="robots" content="index,follow">
-<!-- 上線後把所有 https://www.example.com.tw 換成正式網址（index.html、robots.txt、sitemap.xml 都要換） -->
-<link rel="canonical" href="https://www.example.com.tw/">
+<!-- 上線後把所有 https://kyle012594-code.github.io/yuesheng-audio 換成正式網址（index.html、robots.txt、sitemap.xml 都要換） -->
+<link rel="canonical" href="https://kyle012594-code.github.io/yuesheng-audio/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:site_name" content="悅聲專業音響有限公司">
 <meta property="og:title" content="悅聲專業音響有限公司｜音響工程・影音系統整合">
 <meta property="og:description" content="建案公設、政府機關、飯店宴會廳與企業的音響工程與影音整合，桃園中壢在地 20 多年。">
-<meta property="og:url" content="https://www.example.com.tw/">
-<meta property="og:image" content="https://www.example.com.tw/assets/hero.jpg">
+<meta property="og:url" content="https://kyle012594-code.github.io/yuesheng-audio/">
+<meta property="og:image" content="https://kyle012594-code.github.io/yuesheng-audio/assets/hero.jpg">
 <link rel="icon" href="assets/logo.png">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
-  "@id": "https://www.example.com.tw/#business",
+  "@id": "https://kyle012594-code.github.io/yuesheng-audio/#business",
   "name": "悅聲專業音響有限公司",
   "alternateName": ["悅聲專業音響", "Yue Sheng Professional Audio"],
   "description": "音響工程與影音系統整合：建案公設音響、會議室視訊系統、宴會廳音響、公共廣播、視聽室。",
-  "url": "https://www.example.com.tw/",
-  "logo": "https://www.example.com.tw/assets/logo.png",
-  "image": "https://www.example.com.tw/assets/hero.jpg",
+  "url": "https://kyle012594-code.github.io/yuesheng-audio/",
+  "logo": "https://kyle012594-code.github.io/yuesheng-audio/assets/logo.png",
+  "image": "https://kyle012594-code.github.io/yuesheng-audio/assets/hero.jpg",
   "foundingDate": "2000-01",
   "telephone": "+886-987-332-776",
   "taxID": "25155135",
@@ -246,8 +246,9 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .qresult .sub{font-size:.85rem;color:var(--muted);margin:0}
 .qscope{margin-top:20px}
 .qscope ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--line);font-size:.9rem}
-.qscope li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
-.qscope li span{color:var(--muted);white-space:nowrap}
+.qscope li{display:flex;justify-content:space-between;align-items:baseline;gap:4px 16px;flex-wrap:wrap;padding:9px 0;border-bottom:1px solid var(--line)}
+.qscope li>:first-child{flex:none;white-space:nowrap}
+.qscope li span{color:var(--muted);flex:1 1 12em;min-width:0;text-align:right;overflow-wrap:anywhere}
 .qwhy{font-size:.85rem;color:var(--fg);margin:16px 0 0;line-height:1.7}
 .contact-mini{display:grid;gap:10px;margin-top:18px}
 .contact-mini .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -502,7 +503,7 @@ footer img{height:28px;width:auto}
   <form id="chatForm"><input class="inp" id="chatIn" placeholder="輸入問題，例如：報價怎麼算？" autocomplete="off"><button type="submit">送出</button></form>
 </section>
 
-<script src="assets/data.js?v=202610081143"></script>
+<script src="assets/data.js?v=202610081150"></script>
 <script>
 (function(){
   // 後台草稿：同一台電腦上，後台按「儲存草稿」後這裡會先顯示草稿
@@ -695,9 +696,9 @@ footer img{height:28px;width:auto}
     $('qAmt').textContent = has ? 'NT$ ' + range : '—';
     $('qSub').textContent = has ? '未稅參考區間，含 ' + (Q.taxPercent||5) + '% 營業稅約 ' + wan(lo*(1+TAX)) + ' – ' + wan(hi*(1+TAX)) : '選擇左邊的施作區域，這裡會顯示整場預估價格。';
     $('qScope').innerHTML = has ? '<p class="lbl" style="margin:0 0 6px">本次估算範圍</p><ul>' +
-      qAreas.map(function(a){ return '<li>'+esc(a.name)+'<span>'+esc(summary(a))+'</span></li>'; }).join('') +
-      ex.map(function(x){ return '<li>'+esc(x.name)+'<span>'+qExtra[x.id]+' '+esc(x.unit)+'</span></li>'; }).join('') +
-      '<li>設備等級<span>'+esc(g.name)+'</span></li></ul>' : '';
+      qAreas.map(function(a){ return '<li><b>'+esc(a.name)+'</b><span>'+esc(summary(a))+'</span></li>'; }).join('') +
+      ex.map(function(x){ return '<li><b>'+esc(x.name)+'</b><span>'+qExtra[x.id]+' '+esc(x.unit)+'</span></li>'; }).join('') +
+      '<li><b>設備等級</b><span>'+esc(g.name)+'</span></li></ul>' : '';
     $('qBarAmt').textContent = has ? 'NT$ ' + range : '—';
     lastQuote = qAreas.map(function(a){ return '・' + a.name + '：' + summary(a); })
       .concat(ex.map(function(x){ return '・' + x.name + ' ' + qExtra[x.id] + x.unit; })).join('\n') +

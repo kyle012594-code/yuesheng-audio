@@ -235,6 +235,10 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .qadd{display:flex;flex-wrap:wrap;gap:8px}
 .qadd .qbtn::before{content:"＋ ";color:var(--gold)}
 .qextras{display:grid;gap:8px}
+.qeq{display:grid;border-top:1px solid var(--line)}
+.qeq .qextra{padding:4px 0}
+.qeq .step button{width:30px;height:30px}.qeq .step input{width:44px}
+.qf small{color:var(--muted);font-size:.8rem;min-width:1.2em}
 .qextra{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:6px 0;font-size:.9rem}
 .qresult{position:sticky;top:calc(env(safe-area-inset-top,0px) + 88px);border:1px solid var(--gold);background:linear-gradient(160deg,var(--panel-2),var(--panel));padding:26px}
 .qresult .lbl{font-size:.8rem;letter-spacing:.14em;color:var(--gold)}
@@ -632,8 +636,21 @@ footer img{height:28px;width:auto}
     var t = byId(Q.areas, typeId); if(!t) return null;
     var same = qAreas.filter(function(a){ return a.type===typeId; }).length;
     var a = { type: typeId, name: t.name.split('／')[0] + (same ? ' ' + (same+1) : '') };
-    if(t.mode==='bgm') a.ping = val || t.ping || 30; else a.qty = val || 1;
+    if(t.mode==='bgm'){ a.ping = val || t.ping || 30; a.spk = null; a.amp = 1; a.opt = {}; }
+    else a.eq = t.items.map(function(it){ return it[1]; });
     return a;
+  }
+  function autoSpk(a, t){ return Math.max(2, Math.ceil(a.ping / (+t.pingPerSpeaker||5))); }
+  function spkOf(a, t){ return a.spk==null ? autoSpk(a, t) : a.spk; }
+  function gradeSpeaker(t, g){ return byId(Q.speakers, t.speaker==='outdoor' ? 'outdoor' : g.speaker) || Q.speakers[0]; }
+  // 每個區域的設備清單（只顯示通用名稱與數量，不顯示品牌與單價）
+  function equipRows(a, t){
+    if(t.mode==='bgm'){
+      var outdoor = t.speaker==='outdoor';
+      return [[outdoor ? '戶外防水喇叭' : '吸頂喇叭', 'spk', spkOf(a,t), '支'], ['擴大機', 'amp', a.amp, '台']]
+        .concat((Q.bgmOptions||[]).map(function(o){ return [o.name, 'opt:'+o.id, a.opt[o.id]||0, o.unit]; }));
+    }
+    return t.items.map(function(it, j){ return it[4] ? [it[4], 'eq:'+j, a.eq[j], it[2]] : null; }).filter(Boolean);
   }
   $('qPresets').innerHTML = Q.presets.map(function(p,i){ return '<button type="button" class="qbtn" data-p="'+i+'">'+esc(p.name)+'</button>'; }).join('') + '<button type="button" class="qbtn" data-p="clear">清空</button>';
   $('qAdd').innerHTML = Q.areas.map(function(t){ return '<button type="button" class="qbtn" data-add="'+esc(t.id)+'">'+esc(t.name)+'</button>'; }).join('');
@@ -644,7 +661,8 @@ footer img{height:28px;width:auto}
   function renderAreas(){
     $('qAreas').innerHTML = qAreas.length ? qAreas.map(function(a,i){
       var t = byId(Q.areas, a.type);
-      var body = t.mode==='bgm' ? '<div class="qrow"><span class="qf">坪數 '+stepper('ping', i, a.ping)+'</span></div>' : '<div class="qrow"><span class="qf">間數 '+stepper('qty', i, a.qty)+'</span></div>';
+      var body = (t.mode==='bgm' ? '<div class="qrow"><span class="qf">坪數 '+stepper('ping', i, a.ping)+'</span><span>依坪數建議喇叭數量，可自行調整</span></div>' : '') +
+        '<div class="qeq">'+equipRows(a,t).map(function(r){ return '<div class="qextra"><span>'+esc(r[0])+'</span><span class="qf">'+stepper('eq', i+'|'+r[1], r[2])+'<small>'+esc(r[3])+'</small></span></div>'; }).join('')+'</div>';
       return '<div class="qarea"><div class="qarea-top"><input class="inp" data-name="'+i+'" value="'+esc(a.name)+'" aria-label="區域名稱"><button type="button" class="qbtn qx" data-del="'+i+'" aria-label="移除這個區域">✕</button></div>'+body+'</div>';
     }).join('') : '<p class="fine" style="margin:0">還沒有區域。選一個快速範本，或從下面新增。</p>';
     calc();
@@ -652,14 +670,19 @@ footer img{height:28px;width:auto}
   function areaCost(a, g){
     var t = byId(Q.areas, a.type);
     if(t.mode==='bgm'){
-      var n = Math.max(2, Math.ceil(a.ping / (+t.pingPerSpeaker||5)));
-      var s = byId(Q.speakers, t.speaker==='outdoor' ? 'outdoor' : g.speaker) || Q.speakers[0];
-      var amp = Q.amps.filter(function(x){ return n <= x.maxSpeakers; })[0] || Q.amps[Q.amps.length-1];
-      var c = amp.price + n*s.price + (s.transformer ? n*Q.transformer.price : 0);
-      Q.work.forEach(function(w){ c += r1000(w.base + w.perSpeaker*n); });
+      var n = spkOf(a,t), s = gradeSpeaker(t, g);
+      var amp = Q.amps.filter(function(x){ return Math.ceil(n/Math.max(1,a.amp)) <= x.maxSpeakers; })[0] || Q.amps[Q.amps.length-1];
+      var c = amp.price*a.amp + n*s.price + (s.transformer ? n*Q.transformer.price : 0);
+      if(n) Q.work.forEach(function(w){ c += r1000(w.base + w.perSpeaker*n); });
+      (Q.bgmOptions||[]).forEach(function(o){ c += (a.opt[o.id]||0)*o.price; });
       return c;
     }
-    return t.items.reduce(function(s,it){ return s + it[1]*it[3]; }, 0) * a.qty * (+g.packMult||1);
+    return t.items.reduce(function(s,it,j){ return s + (it[4] ? a.eq[j] : it[1])*it[3]; }, 0) * (+g.packMult||1);
+  }
+  function summary(a){
+    var t = byId(Q.areas, a.type);
+    var parts = equipRows(a,t).filter(function(r){ return r[2] > 0; }).map(function(r){ return r[0] + ' ' + r[2] + r[3]; });
+    return (t.mode==='bgm' ? a.ping + ' 坪・' : '') + (parts.join('、') || '未選設備');
   }
   function calc(){
     var g = byId(Q.grades, qGrade) || Q.grades[0];
@@ -667,16 +690,16 @@ footer img{height:28px;width:auto}
     var ex = Q.extras.filter(function(x){ return qExtra[x.id] > 0; });
     ex.forEach(function(x){ sub += x.price * qExtra[x.id]; });
     var has = qAreas.length || ex.length;
-    var lo = Math.floor(sub*(1-RANGE)/10000)*10000, hi = Math.ceil(sub*(1+RANGE)/10000)*10000;
+    var lo = Math.floor(sub*(1-RANGE)/1000)*1000, hi = Math.ceil(sub*(1+RANGE)/1000)*1000;
     var range = wan(lo) + ' – ' + wan(hi);
     $('qAmt').textContent = has ? 'NT$ ' + range : '—';
     $('qSub').textContent = has ? '未稅參考區間，含 ' + (Q.taxPercent||5) + '% 營業稅約 ' + wan(lo*(1+TAX)) + ' – ' + wan(hi*(1+TAX)) : '選擇左邊的施作區域，這裡會顯示整場預估價格。';
     $('qScope').innerHTML = has ? '<p class="lbl" style="margin:0 0 6px">本次估算範圍</p><ul>' +
-      qAreas.map(function(a){ var t = byId(Q.areas, a.type); return '<li>'+esc(a.name)+'<span>'+(t.mode==='bgm' ? a.ping+' 坪' : a.qty+' 間')+'</span></li>'; }).join('') +
+      qAreas.map(function(a){ return '<li>'+esc(a.name)+'<span>'+esc(summary(a))+'</span></li>'; }).join('') +
       ex.map(function(x){ return '<li>'+esc(x.name)+'<span>'+qExtra[x.id]+' '+esc(x.unit)+'</span></li>'; }).join('') +
       '<li>設備等級<span>'+esc(g.name)+'</span></li></ul>' : '';
     $('qBarAmt').textContent = has ? 'NT$ ' + range : '—';
-    lastQuote = qAreas.map(function(a){ var t = byId(Q.areas, a.type); return '・' + a.name + '（' + (t.mode==='bgm' ? a.ping+' 坪' : a.qty+' 間') + '）'; })
+    lastQuote = qAreas.map(function(a){ return '・' + a.name + '：' + summary(a); })
       .concat(ex.map(function(x){ return '・' + x.name + ' ' + qExtra[x.id] + x.unit; })).join('\n') +
       '\n設備等級：' + g.name + '\n網站預估（未稅）：NT$ ' + range;
     return has;
@@ -690,19 +713,24 @@ footer img{height:28px;width:auto}
   });
   $('qAdd').addEventListener('click', function(e){ var b = e.target.closest('[data-add]'); if(!b) return; var a = newArea(b.dataset.add); if(a){ qAreas.push(a); renderAreas(); } });
   function setVal(k, key, v){
-    v = Math.max(k==='extra' ? 0 : 1, Math.min(9999, Math.round(v)||0));
-    if(k==='extra') qExtra[key] = v;
-    else { var a = qAreas[+key]; if(!a) return v; if(k==='ping') a.ping = v; else a.qty = v; }
+    v = Math.max(k==='ping' ? 1 : 0, Math.min(9999, Math.round(v)||0));
+    if(k==='extra'){ qExtra[key] = v; return v; }
+    var ks = String(key).split('|'), a = qAreas[+ks[0]]; if(!a) return v;
+    if(k==='ping'){ a.ping = v; a.spk = null; return v; }
+    var f = ks[1];
+    if(f==='spk') a.spk = v; else if(f==='amp') a.amp = v;
+    else if(f.indexOf('opt:')===0) a.opt[f.slice(4)] = v;
+    else if(f.indexOf('eq:')===0) a.eq[+f.slice(3)] = v;
     return v;
   }
   $('qform').addEventListener('click', function(e){
     var b = e.target.closest('button[data-d]');
-    if(b){ var inp = b.parentNode.querySelector('input'), k = b.dataset.k; inp.value = setVal(k, b.dataset.key, (+inp.value||0) + (k==='ping' ? 5 : 1)*(+b.dataset.d)); calc(); return; }
+    if(b){ var inp = b.parentNode.querySelector('input'), k = b.dataset.k; inp.value = setVal(k, b.dataset.key, (+inp.value||0) + (k==='ping' ? 5 : 1)*(+b.dataset.d)); if(k==='ping') renderAreas(); else calc(); return; }
     var d = e.target.closest('[data-del]'); if(d){ qAreas.splice(+d.dataset.del, 1); renderAreas(); }
   });
   $('qform').addEventListener('change', function(e){
     var el = e.target;
-    if(el.dataset.k){ el.value = setVal(el.dataset.k, el.dataset.key, +el.value); calc(); }
+    if(el.dataset.k){ el.value = setVal(el.dataset.k, el.dataset.key, +el.value); if(el.dataset.k==='ping') renderAreas(); else calc(); }
     else if(el.name==='grade'){ qGrade = el.value; calc(); }
   });
   $('qform').addEventListener('input', function(e){ var el = e.target; if(el.dataset.name != null){ qAreas[+el.dataset.name].name = el.value; calc(); } });

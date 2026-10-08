@@ -98,10 +98,10 @@ textarea.inp{min-height:90px;resize:vertical}
       label:function(x){return x.q;}, sub:function(x){return (x.keywords||[]).join('、');},
       blank:{q:'新問題',keywords:[],a:'',link:'',linkText:''},
       fields:[['q','問題（顯示在快速按鈕）','text'],['keywords','關鍵字（用逗號分隔）','csv'],['a','回答','textarea'],['link','附帶連結（例：#quote）','text'],['linkText','連結文字','text']] },
-    areas: { title:'估價：區域類型', path:['quote','areas'], hint:'「背景音樂」區域會依坪數自動算喇叭數（坪數 ÷ 每支喇叭涵蓋坪數），再依喇叭數自動配擴大機、變壓器與施工費。「整套設備」區域（會議室、KTV、劇院）直接列出下面的品項，一行一項，格式：品名｜數量｜單位｜單價。', idPrefix:'a',
+    areas: { title:'估價：區域類型', path:['quote','areas'], hint:'「背景音樂」區域會依坪數自動算喇叭數（坪數 ÷ 每支喇叭涵蓋坪數），再依喇叭數自動配擴大機、變壓器與施工費。「整套設備」區域（會議室、KTV、劇院）直接列出下面的品項，一行一項，格式：品名｜預設數量｜單位｜單價｜網站顯示名稱。網站顯示名稱留空的項目（例如線材、施工）不會讓客人看到也不能調整，但會算進預估價。', idPrefix:'a',
       label:function(x){return x.name;}, sub:function(x){return x.mode==='pack' ? '整套設備・'+(x.items||[]).length+' 項' : '背景音樂・每 '+x.pingPerSpeaker+' 坪一支';},
       blank:{name:'新區域',mode:'bgm',ping:30,pingPerSpeaker:5,speaker:'mus8',items:[]},
-      fields:[['name','區域名稱','text'],['mode','計算方式','select',[['bgm','背景音樂（依坪數算喇叭）'],['pack','整套設備（固定品項）']]],['ping','預設坪數（背景音樂用）','number'],['pingPerSpeaker','每支喇叭涵蓋坪數（背景音樂用）','number'],['speaker','喇叭（填「戶外防水造景」會固定使用，其他依設備等級）','select','speakers'],['items','整套設備品項（品名｜數量｜單位｜單價）','items']] },
+      fields:[['name','區域名稱','text'],['mode','計算方式','select',[['bgm','背景音樂（依坪數算喇叭）'],['pack','整套設備（固定品項）']]],['ping','預設坪數（背景音樂用）','number'],['pingPerSpeaker','每支喇叭涵蓋坪數（背景音樂用）','number'],['speaker','喇叭（填「戶外防水造景」會固定使用，其他依設備等級）','select','speakers'],['items','整套設備品項（品名｜預設數量｜單位｜單價｜網站顯示名稱）','items']] },
     grades: { title:'估價：設備等級', path:['quote','grades'], hint:'訪客可選的設備等級。背景音樂區域會改用該等級的喇叭；整套設備區域（會議室、KTV、劇院）的金額乘上倍率。網站只顯示整場預估區間，不會顯示品牌與單價。', idPrefix:'g',
       label:function(x){return x.name;}, sub:function(x){return '整套設備 × '+x.packMult;},
       blank:{name:'新等級',speaker:'mus8',packMult:1},
@@ -114,13 +114,17 @@ textarea.inp{min-height:90px;resize:vertical}
       label:function(x){return x.name;}, sub:function(x){return x.price+' 元・最多 '+x.maxSpeakers+' 支';},
       blank:{name:'新擴大機',maxSpeakers:10,price:15000},
       fields:[['name','品名','text'],['maxSpeakers','最多可帶喇叭數','number'],['price','單價（元）','number']] },
+    bgmOptions: { title:'估價：背景音樂可加選設備', path:['quote','bgmOptions'], hint:'背景音樂區域（大廳、健身房等）裡，喇叭和擴大機以外、客人可以自己加的設備，預設數量為 0。', idPrefix:'o',
+      label:function(x){return x.name;}, sub:function(x){return x.price+' 元／'+x.unit;},
+      blank:{name:'新設備',unit:'個',price:0},
+      fields:[['name','名稱','text'],['unit','單位','text'],['price','單價（元）','number']] },
     extras: { title:'估價：加購項目', path:['quote','extras'], hint:'訪客可以自己填數量的加購品項。', idPrefix:'x',
       label:function(x){return x.name;}, sub:function(x){return x.price+' 元／'+x.unit;},
       blank:{name:'新項目',unit:'組',price:0},
       fields:[['name','品名','text'],['unit','單位','text'],['price','單價（元）','number']] }
   };
   var TABS = [['projects','建案實績'],['products','產品設備'],['gallery','施工實景'],['faq','自動回覆'],['areas','估價設定'],['company','公司資訊'],['export','匯出發布']];
-  var QTABS = ['areas','grades','speakers','amps','extras','qset'];
+  var QTABS = ['areas','grades','speakers','amps','bgmOptions','extras','qset'];
   var cur = 'projects', sel = 0, pendingDel = false;
   function qbar(key){ return '<div class="toolbar">'+QTABS.map(function(k){ return '<button class="btn'+(k===key?' gold':'')+'" data-k="'+k+'" type="button">'+(k==='qset'?'施工費與附註':S[k].title.replace('估價：',''))+'</button>'; }).join('')+'</div>'; }
 
@@ -188,7 +192,7 @@ textarea.inp{min-height:90px;resize:vertical}
         var k=el.dataset.f, t=el.dataset.t;
         if(t==='lines') item[k] = el.value.split('\n').map(function(x){return x.trim();}).filter(Boolean);
         else if(t==='csv') item[k] = el.value.split(/[,，、]/).map(function(x){return x.trim();}).filter(Boolean);
-        else if(t==='items') item[k] = el.value.split('\n').map(function(x){ var c = x.split(/[｜|]/).map(function(y){return y.trim();}); return c[0] ? [c[0], parseFloat(c[1])||1, c[2]||'式', parseFloat(String(c[3]).replace(/,/g,''))||0] : null; }).filter(Boolean);
+        else if(t==='items') item[k] = el.value.split('\n').map(function(x){ var c = x.split(/[｜|]/).map(function(y){return y.trim();}); if(!c[0]) return null; var r = [c[0], parseFloat(c[1])||0, c[2]||'式', parseFloat(String(c[3]).replace(/,/g,''))||0]; if(c[4]) r.push(c[4]); return r; }).filter(Boolean);
         else if(t==='check') item[k] = el.checked;
         else if(t==='number') item[k] = parseFloat(el.value)||0;
         else if(el.value==='（已上傳照片）') {}

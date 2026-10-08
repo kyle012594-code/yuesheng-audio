@@ -207,36 +207,79 @@ p{margin:0}
 .dcard .ask{margin-top:auto;padding-top:12px;font-size:.88rem;color:var(--gold-hi);text-decoration:none;border-top:1px solid var(--line)}
 
 /* 估價 */
-.quote{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:32px;align-items:start}
+.quote{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:32px;align-items:start}
 .qform{display:grid;gap:26px}
 .field{display:grid;gap:10px}
-.field>label,.field>legend{font-size:.85rem;letter-spacing:.12em;color:var(--gold)}
+.field>label,.field>legend,.qh{font-size:.85rem;letter-spacing:.12em;color:var(--gold)}
 fieldset{border:0;margin:0;padding:0;min-width:0}
 .opts{display:flex;flex-wrap:wrap;gap:8px}
 .opt{position:relative}
 .opt input{position:absolute;opacity:0;inset:0;cursor:pointer}
-.opt span{display:block;padding:9px 16px;border:1px solid var(--line);font-size:.92rem;cursor:pointer;transition:all .2s}
+.opt span{display:block;padding:9px 16px;border:1px solid var(--line);font-size:.92rem;cursor:pointer}
 .opt input:checked+span{border-color:var(--gold);background:rgba(201,162,74,.14);color:var(--gold-hi)}
 .opt input:focus-visible+span{outline:2px solid var(--gold-hi);outline-offset:2px}
-.range-row{display:flex;align-items:center;gap:16px}
-input[type=range]{flex:1;accent-color:var(--gold);min-width:0}
-.ping{font-family:var(--latin);font-size:1.6rem;color:var(--gold-hi);min-width:5.5em;text-align:right;font-variant-numeric:tabular-nums}
-.ping small{font-family:var(--body);font-size:.8rem;color:var(--muted)}
-.qresult{position:sticky;top:calc(env(safe-area-inset-top,0px) + 88px);border:1px solid var(--gold);background:linear-gradient(160deg,var(--panel-2),var(--panel));padding:28px}
-.qresult .lbl{font-size:.8rem;letter-spacing:.14em;color:var(--gold)}
-.qresult .amt{font-family:var(--latin);font-weight:600;font-size:clamp(1.8rem,3.4vw,2.5rem);line-height:1.15;color:var(--gold-hi);margin:6px 0 4px;font-variant-numeric:tabular-nums}
-.qresult .sub{font-size:.85rem;color:var(--muted)}
-.qlines{margin:20px 0;border-top:1px solid var(--line);font-size:.9rem}
-.qlines div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
-.qlines div span:last-child{font-variant-numeric:tabular-nums;color:var(--fg)}
-.qlines div span:first-child{color:var(--muted)}
-.contact-mini{display:grid;gap:10px;margin-top:8px}
+.qbtn{font:inherit;font-size:.92rem;color:var(--fg);background:transparent;border:1px solid var(--line);padding:9px 16px;cursor:pointer;border-radius:2px}
+.qbtn:hover{border-color:var(--gold);color:var(--gold-hi)}
+.qbtn.on{border-color:var(--gold);background:rgba(201,162,74,.14);color:var(--gold-hi)}
+.qareas{display:grid;gap:12px}
+.qarea{border:1px solid var(--line);background:var(--panel);padding:16px;display:grid;gap:12px}
+.qarea-top{display:flex;align-items:center;gap:10px}
+.qarea-top .inp{flex:1;padding:8px 12px;font-weight:600}
+.qx{flex:none;width:36px;height:36px;font-size:1.1rem;line-height:1;padding:0;color:var(--muted)}
+.qrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;font-size:.88rem;color:var(--muted)}
+.qf{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.qrow select.inp{width:auto;flex:1;min-width:0;padding:8px 10px}
+.step{display:inline-flex;align-items:center;border:1px solid var(--line)}
+.step button{font:inherit;width:34px;height:34px;background:transparent;border:0;color:var(--gold-hi);font-size:1.1rem;cursor:pointer}
+.step input{width:56px;text-align:center;background:transparent;border:0;color:var(--fg);font:inherit;font-variant-numeric:tabular-nums;-moz-appearance:textfield}
+.step input::-webkit-outer-spin-button,.step input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.qadd{display:flex;flex-wrap:wrap;gap:8px}
+.qadd .qbtn::before{content:"＋ ";color:var(--gold)}
+.qextras{display:grid;gap:8px}
+.qextra{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:6px 0;font-size:.9rem}
+.qextra small{display:block;color:var(--muted);font-size:.8rem}
+.qresult{position:sticky;top:calc(env(safe-area-inset-top,0px) + 88px);border:1px solid var(--gold);background:linear-gradient(160deg,var(--panel-2),var(--panel));padding:26px}
+.qsheet-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;border-bottom:1px solid var(--gold);padding-bottom:12px}
+.qsheet-head h3{margin:0;font-size:1.4rem;letter-spacing:.3em}
+.qsheet-head small{display:block;color:var(--muted);font-size:.78rem;text-align:right;line-height:1.6}
+.qtable{width:100%;border-collapse:collapse;font-size:.86rem;margin-top:6px}
+.qtable th{text-align:left;font-weight:500;color:var(--gold);font-size:.78rem;letter-spacing:.08em;padding:8px 0 6px;border-bottom:1px solid var(--line)}
+.qtable td{padding:7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.qtable td.n,.qtable th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;padding-left:10px}
+.qtable td small{display:block;color:var(--muted);font-size:.78rem}
+.qtable tr.grp td{padding-top:16px;color:var(--gold-hi);font-weight:600;border-bottom-color:var(--gold)}
+.qtable tr.grp td.n{color:var(--fg);font-weight:500}
+.qtot{margin-top:14px;display:grid;gap:6px;font-size:.92rem}
+.qtot div{display:flex;justify-content:space-between;gap:12px;font-variant-numeric:tabular-nums}
+.qtot div span:first-child{color:var(--muted)}
+.qtot .big{font-family:var(--latin);font-size:1.7rem;font-weight:600;color:var(--gold-hi);border-top:1px solid var(--gold);padding-top:8px;margin-top:4px}
+.qtot .big span:first-child{font-family:var(--body);font-size:.9rem;align-self:center}
+.qterms{margin:16px 0 0;padding-left:1.3em;font-size:.78rem;color:var(--muted);display:grid;gap:3px}
+.qempty{padding:28px 0;color:var(--muted);text-align:center;font-size:.9rem}
+.contact-mini{display:grid;gap:10px;margin-top:18px}
+.contact-mini .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qactions{display:flex;flex-wrap:wrap;gap:10px}
+.qactions .btn{flex:1;justify-content:center;text-align:center}
 .inp{width:100%;background:var(--ink);border:1px solid var(--line);color:var(--fg);padding:11px 14px;font:inherit;font-size:.95rem;border-radius:2px}
 .inp:focus{border-color:var(--gold);outline:none}
 textarea.inp{min-height:110px;resize:vertical}
 .notice{margin-top:14px;padding:14px;border:1px dashed var(--gold);font-size:.88rem;color:var(--fg);white-space:pre-wrap}
 .fine{font-size:.78rem;color:var(--muted);margin-top:12px}
-@media (max-width:900px){.quote{grid-template-columns:1fr}.qresult{position:static}}
+@media (max-width:900px){.quote{grid-template-columns:1fr}.qresult{position:static;padding:20px 16px}}
+.qbar{display:none}
+@media (max-width:900px){.qbar{display:flex;position:sticky;bottom:0;z-index:5;align-items:center;justify-content:space-between;gap:12px;margin:0 -16px;padding:10px 88px 10px 16px;background:var(--ink,#0b0b0b);border-top:1px solid var(--gold);font-size:.85rem;color:var(--muted)}
+.qbar b{display:block;font-family:var(--latin);font-size:1.25rem;color:var(--gold-hi);font-variant-numeric:tabular-nums}
+.qbar a{color:var(--gold-hi);text-decoration:none;white-space:nowrap}}
+@media (max-width:420px){.qactions .btn{padding-left:10px;padding-right:10px;font-size:.88rem}}
+@media (max-width:420px){.contact-mini .two{grid-template-columns:1fr}.qtable{font-size:.82rem}}
+@media print{
+  body *{visibility:hidden!important}
+  .qresult,.qresult *{visibility:visible!important}
+  .qresult{position:absolute;left:0;top:0;width:100%;border:0;background:#fff!important;color:#000!important;padding:0}
+  .qresult *{color:#000!important;border-color:#999!important;background:transparent!important}
+  .qresult .contact-mini,.qresult .notice{display:none!important}
+  .qbar{display:none!important}
+}
 
 /* 聯絡 */
 .contact{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:48px}
@@ -388,27 +431,29 @@ footer img{height:28px;width:auto}
   <div class="wrap">
     <div class="sec-head">
       <div><p class="eyebrow">Estimate</p><h2>線上估價</h2></div>
-      <p>選擇場地類型、坪數與需求，馬上看到參考價格區間。留下聯絡方式後，我們會安排現場勘查與正式報價。</p>
+      <p>依我們實際做過的建案報價單整理：選好要施作的區域，右邊會像正式報價單一樣逐項列出品項與金額。可以直接存成 PDF，或用 LINE 傳給我們安排現場勘查。</p>
     </div>
     <div class="quote">
-      <form class="qform" id="qform">
-        <fieldset class="field"><legend>場地類型</legend><div class="opts" id="qVenue"></div></fieldset>
-        <div class="field">
-          <label for="qPing">空間大小</label>
-          <div class="range-row"><input type="range" id="qPing" min="5" max="500" step="5" value="60"><output class="ping" id="qPingOut" for="qPing">60 <small>坪</small></output></div>
-        </div>
-        <fieldset class="field"><legend>需要的功能（可複選）</legend><div class="opts" id="qFeat"></div></fieldset>
-        <fieldset class="field"><legend>設備等級</legend><div class="opts" id="qTier"></div></fieldset>
-      </form>
-      <aside class="qresult" aria-live="polite">
-        <p class="lbl">參考估價區間</p>
-        <p class="amt" id="qAmt"></p>
-        <p class="sub" id="qSub"></p>
-        <div class="qlines" id="qLines"></div>
+      <div class="qform" id="qform">
+        <div class="field"><p class="qh">快速範本</p><div class="opts" id="qPresets"></div></div>
+        <div class="field"><p class="qh">施作區域</p><div class="qareas" id="qAreas"></div></div>
+        <div class="field"><p class="qh">新增區域</p><div class="qadd" id="qAdd"></div></div>
+        <div class="field"><p class="qh">加購項目</p><div class="qextras" id="qExtras"></div></div>
+        <div class="qbar"><span>合計（含稅）<b id="qBarAmt"></b></span><a href="#qSheetTop">看報價單 ↓</a></div>
+      </div>
+      <aside class="qresult" id="qSheetTop" aria-live="polite">
+        <div class="qsheet-head"><h3>報價單</h3><small id="qCo"></small></div>
+        <div id="qSheet"></div>
         <form class="contact-mini" id="qSend">
-          <input class="inp" id="qName" required placeholder="您的稱呼">
-          <input class="inp" id="qTel" required placeholder="電話或 LINE ID">
-          <button class="btn btn-gold" type="submit">送出估價需求</button>
+          <div class="two">
+            <input class="inp" id="qName" required placeholder="您的稱呼／公司">
+            <input class="inp" id="qTel" required placeholder="電話">
+          </div>
+          <input class="inp" id="qPlace" placeholder="建案名稱或施工地點（選填）">
+          <div class="qactions">
+            <button class="btn btn-gold" type="submit">用 LINE 傳給我們</button>
+            <button class="btn btn-line" type="button" id="qPrint">存成 PDF／列印</button>
+          </div>
         </form>
         <div class="notice" id="qNotice" hidden></div>
         <p class="fine" id="qNote"></p>
@@ -480,9 +525,9 @@ footer img{height:28px;width:auto}
 (function(){
   // 後台草稿：同一台電腦上，後台按「儲存草稿」後這裡會先顯示草稿
   var D = window.SITE_DATA, draft = null;
-  try{ draft = JSON.parse(localStorage.getItem('ys-site-draft-v2') || 'null'); }catch(e){}
+  try{ draft = JSON.parse(localStorage.getItem('ys-site-draft-v3') || 'null'); }catch(e){}
   if(draft && draft.company){ D = draft; document.getElementById('draftBar').hidden = false; }
-  document.getElementById('clearDraft').onclick = function(){ try{localStorage.removeItem('ys-site-draft-v2')}catch(e){} location.reload(); };
+  document.getElementById('clearDraft').onclick = function(){ try{localStorage.removeItem('ys-site-draft-v3')}catch(e){} location.reload(); };
 
   var $ = function(id){ return document.getElementById(id); };
   var esc = function(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
@@ -599,46 +644,123 @@ footer img{height:28px;width:auto}
   $('gridD').addEventListener('keydown', function(e){ if(e.key==='Enter') openProduct(e); });
   renderProducts();
 
-  // 估價（依公司報價單項目：擴大機、喇叭、配線配管工資、線材五金、安裝測試）
-  var Q = D.quote;
-  function opt(name, type, items, checkedFn){
-    return items.map(function(it){ return '<label class="opt"><input type="'+type+'" name="'+name+'" value="'+esc(it.id)+'"'+(checkedFn(it)?' checked':'')+'><span>'+esc(it.name)+'</span></label>'; }).join('');
+  // 估價（依公司實際報價單：每個區域列擴大機、喇叭、變壓器、配線配管、線材五金、安裝測試）
+  var Q = D.quote, TAX = (Q.taxPercent||5)/100;
+  var byId = function(list, id){ return list.filter(function(x){ return x.id===id; })[0]; };
+  var r1000 = function(n){ return Math.round(n/1000)*1000; };
+  var num = function(n){ return Math.round(n).toLocaleString('zh-TW'); };
+  var qAreas = [], qExtra = {}, lastQuote = '';
+  function newArea(typeId, val){
+    var t = byId(Q.areas, typeId); if(!t) return null;
+    var same = qAreas.filter(function(a){ return a.type===typeId; }).length;
+    var a = { type: typeId, name: t.name.split('／')[0] + (same ? ' ' + (same+1) : '') };
+    if(t.mode==='bgm'){ a.ping = val || t.ping || 30; a.speaker = t.speaker; a.count = null; }
+    else a.qty = val || 1;
+    return a;
   }
-  $('qVenue').innerHTML = opt('venue','radio',Q.venues,function(it){ return it===Q.venues[0]; });
-  $('qFeat').innerHTML = opt('feat','checkbox',Q.features,function(it){ return it.id==='bgm'; });
-  $('qTier').innerHTML = opt('tier','radio',Q.tiers,function(it){ return it===Q.tiers[0]; });
+  function suggest(a, t){ return Math.max(2, Math.ceil(a.ping / (+t.pingPerSpeaker||5))); }
+  $('qPresets').innerHTML = Q.presets.map(function(p,i){ return '<button type="button" class="qbtn" data-p="'+i+'">'+esc(p.name)+'</button>'; }).join('') + '<button type="button" class="qbtn" data-p="clear">清空</button>';
+  $('qAdd').innerHTML = Q.areas.map(function(t){ return '<button type="button" class="qbtn" data-add="'+esc(t.id)+'">'+esc(t.name)+'</button>'; }).join('');
+  $('qExtras').innerHTML = Q.extras.map(function(x){ return '<div class="qextra"><span>'+esc(x.name)+'<small>'+money(x.price)+'／'+esc(x.unit)+'</small></span>'+stepper('extra', x.id, 0)+'</div>'; }).join('');
+  $('qCo').innerHTML = esc(C.name) + '<br>統編 ' + esc(C.taxId) + '・' + esc(C.phone);
   $('qNote').textContent = Q.note;
-  var lastQuote = '';
-  function calc(){
-    var f = $('qform');
-    var v = Q.venues.filter(function(x){ return x.id===(f.querySelector('[name=venue]:checked')||{}).value; })[0] || Q.venues[0];
-    var t = Q.tiers.filter(function(x){ return x.id===(f.querySelector('[name=tier]:checked')||{}).value; })[0] || Q.tiers[0];
-    var feats = [].map.call(f.querySelectorAll('[name=feat]:checked'), function(i){ return Q.features.filter(function(x){return x.id===i.value;})[0]; }).filter(Boolean);
-    var ping = +$('qPing').value;
-    $('qPingOut').innerHTML = ping + ' <small>坪</small>';
-    var spk = Math.max(2, Math.ceil(ping/(+v.pingPerSpeaker||8)));
-    var lines = [
-      ['擴大機', +v.amp||0],
-      [(v.speakerName||'喇叭')+' × '+spk, spk*(+v.speakerPrice||0)],
-      ['配線、配管、工資', +v.labor||0],
-      ['線材、五金另料', +v.material||0],
-      ['安裝測試', +v.test||0]
-    ].concat(feats.map(function(x){ return [x.name, +x.price||0]; }));
-    var sub = lines.reduce(function(s,l){ return s + l[1]; }, 0);
-    var mid = sub * t.mult;
-    var r = (Q.rangePercent||10)/100;
-    var lo = Math.round(mid*(1-r)/1000)*1000, hi = Math.round(mid*(1+r)/1000)*1000;
-    $('qAmt').textContent = money(lo) + ' – ' + Math.round(hi).toLocaleString('zh-TW');
-    $('qSub').textContent = '未稅，約 ' + ping + ' 坪，建議配置 ' + spk + ' 支喇叭（每 ' + v.pingPerSpeaker + ' 坪一支）。含 ' + (Q.taxPercent||5) + '% 稅約 ' + money(lo*(1+(Q.taxPercent||5)/100)) + ' 起';
-    $('qLines').innerHTML = lines.map(function(l){ return '<div><span>'+esc(l[0])+'</span><span>'+(l[1]?money(l[1]):'含在基本工程')+'</span></div>'; }).join('') +
-      '<div><span>設備等級</span><span>'+esc(t.name)+' ×'+t.mult+'</span></div>';
-    lastQuote = '場地：'+v.name+'\n坪數：'+ping+' 坪（喇叭 '+spk+' 支）\n功能：'+(feats.map(function(x){return x.name;}).join('、')||'無')+'\n等級：'+t.name+'\n參考區間（未稅）：'+money(lo)+' – '+money(hi);
+  function stepper(kind, key, v){ return '<span class="step"><button type="button" data-k="'+kind+'" data-key="'+esc(key)+'" data-d="-1" aria-label="減少">−</button><input type="number" inputmode="numeric" min="0" data-k="'+kind+'" data-key="'+esc(key)+'" value="'+v+'" aria-label="數量"><button type="button" data-k="'+kind+'" data-key="'+esc(key)+'" data-d="1" aria-label="增加">＋</button></span>'; }
+  function renderAreas(){
+    $('qAreas').innerHTML = qAreas.length ? qAreas.map(function(a,i){
+      var t = byId(Q.areas, a.type), body;
+      if(t.mode==='bgm'){
+        var n = a.count==null ? suggest(a,t) : a.count;
+        body = '<div class="qrow"><span class="qf">坪數 '+stepper('ping', i, a.ping)+'</span><span class="qf">喇叭 '+stepper('count', i, n)+' 支</span></div>'+
+          '<div class="qrow"><select class="inp" data-i="'+i+'" aria-label="喇叭等級">'+Q.speakers.map(function(s){ return '<option value="'+esc(s.id)+'"'+(s.id===a.speaker?' selected':'')+'>'+esc(s.short||s.name)+'・'+num(s.price)+'／'+esc(s.unit)+'</option>'; }).join('')+'</select></div>';
+      } else body = '<div class="qrow"><span class="qf">間數 '+stepper('qty', i, a.qty)+'</span><span>'+esc(t.items.length)+' 項設備＋施工，可在報價單看明細</span></div>';
+      return '<div class="qarea"><div class="qarea-top"><input class="inp" data-name="'+i+'" value="'+esc(a.name)+'" aria-label="區域名稱"><button type="button" class="qbtn qx" data-del="'+i+'" aria-label="移除這個區域">✕</button></div>'+body+'</div>';
+    }).join('') : '<p class="fine" style="margin:0">還沒有區域。選一個快速範本，或從下面新增。</p>';
+    calc();
   }
-  $('qform').addEventListener('input', calc); $('qform').addEventListener('change', calc); calc();
+  function areaLines(a){
+    var t = byId(Q.areas, a.type), L = [];
+    if(t.mode==='bgm'){
+      var n = a.count==null ? suggest(a,t) : a.count; if(!n) return L;
+      var s = byId(Q.speakers, a.speaker) || Q.speakers[0];
+      var amp = Q.amps.filter(function(x){ return n <= x.maxSpeakers; })[0] || Q.amps[Q.amps.length-1];
+      L.push([amp.name, 1, '台', amp.price]);
+      L.push([s.name, n, s.unit, s.price]);
+      if(s.transformer) L.push([Q.transformer.name, n, Q.transformer.unit, Q.transformer.price]);
+      Q.work.forEach(function(w){ L.push([w.name, 1, '式', r1000(w.base + w.perSpeaker*n)]); });
+    } else {
+      t.items.forEach(function(it){ L.push([it[0], it[1]*a.qty, it[2], it[3]]); });
+    }
+    return L;
+  }
+  function calc(){
+    var groups = qAreas.map(function(a){ return { name: a.name, lines: areaLines(a) }; });
+    var ex = Q.extras.filter(function(x){ return qExtra[x.id] > 0; }).map(function(x){ return [x.name, qExtra[x.id], x.unit, x.price]; });
+    if(ex.length) groups.push({ name: '加購項目', lines: ex });
+    groups = groups.filter(function(g){ return g.lines.length; });
+    var sub = 0, rows = '', txt = [];
+    groups.forEach(function(g){
+      var gs = g.lines.reduce(function(s,l){ return s + l[1]*l[3]; }, 0); sub += gs;
+      rows += '<tr class="grp"><td>'+esc(g.name)+'</td><td class="n">'+num(gs)+'</td></tr>';
+      txt.push('【'+g.name+'】');
+      g.lines.forEach(function(l){
+        rows += '<tr><td>'+esc(l[0])+'<small>'+num(l[1])+' '+esc(l[2])+' × '+num(l[3])+'</small></td><td class="n">'+num(l[1]*l[3])+'</td></tr>';
+        txt.push('・'+l[0]+' '+l[1]+l[2]+' × '+num(l[3])+' = '+num(l[1]*l[3]));
+      });
+    });
+    var tax = Math.round(sub*TAX);
+    $('qSheet').innerHTML = groups.length ?
+      '<table class="qtable"><thead><tr><th>品項</th><th class="n">合計</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+      '<div class="qtot"><div><span>小計（未稅）</span><span>'+num(sub)+'</span></div><div><span>營業稅 '+(Q.taxPercent||5)+'%</span><span>'+num(tax)+'</span></div><div class="big"><span>合計（含稅）</span><span>NT$ '+num(sub+tax)+'</span></div></div>'+
+      '<ol class="qterms">'+Q.terms.map(function(t){ return '<li>'+esc(t)+'</li>'; }).join('')+'</ol>'
+      : '<p class="qempty">選擇左邊的區域，這裡會列出報價明細。</p>';
+    $('qBarAmt').textContent = groups.length ? 'NT$ ' + num(sub+tax) : '—';
+    lastQuote = txt.join('\n') + '\n小計（未稅）' + num(sub) + '\n含稅合計 NT$ ' + num(sub+tax);
+    return groups.length;
+  }
+  $('qPresets').addEventListener('click', function(e){
+    var b = e.target.closest('[data-p]'); if(!b) return;
+    qAreas = [];
+    if(b.dataset.p!=='clear') Q.presets[+b.dataset.p].areas.forEach(function(p){ var a = newArea(p[0], p[1]); if(a) qAreas.push(a); });
+    [].forEach.call(this.children, function(x){ x.classList.toggle('on', x===b && b.dataset.p!=='clear'); });
+    renderAreas();
+  });
+  $('qAdd').addEventListener('click', function(e){ var b = e.target.closest('[data-add]'); if(!b) return; var a = newArea(b.dataset.add); if(a){ qAreas.push(a); renderAreas(); } });
+  function setVal(k, key, v){
+    v = Math.max(k==='ping'||k==='qty' ? 1 : 0, Math.min(9999, Math.round(v)||0));
+    if(k==='extra') qExtra[key] = v;
+    else { var a = qAreas[+key]; if(!a) return v; if(k==='ping'){ a.ping = v; a.count = null; } else if(k==='count') a.count = v; else a.qty = v; }
+    return v;
+  }
+  $('qform').addEventListener('click', function(e){
+    var b = e.target.closest('button[data-d]');
+    if(b){
+      var inp = b.parentNode.querySelector('input'), k = b.dataset.k;
+      inp.value = setVal(k, b.dataset.key, (+inp.value||0) + (k==='ping' ? 5 : 1)*(+b.dataset.d));
+      if(k==='ping') renderAreas(); else calc();
+      return;
+    }
+    var d = e.target.closest('[data-del]'); if(d){ qAreas.splice(+d.dataset.del, 1); renderAreas(); }
+  });
+  $('qform').addEventListener('change', function(e){
+    var el = e.target;
+    if(el.dataset.k){ el.value = setVal(el.dataset.k, el.dataset.key, +el.value); if(el.dataset.k==='ping') renderAreas(); else calc(); }
+    else if(el.dataset.i != null){ qAreas[+el.dataset.i].speaker = el.value; calc(); }
+  });
+  $('qform').addEventListener('input', function(e){ var el = e.target; if(el.dataset.name != null){ qAreas[+el.dataset.name].name = el.value; calc(); } });
+  qAreas = Q.presets[0].areas.map(function(p){ return newArea(p[0], p[1]); }).filter(Boolean);
+  $('qPresets').children[0].classList.add('on');
+  renderAreas();
+  $('qPrint').onclick = function(){ window.print(); };
   $('qSend').addEventListener('submit', function(e){
     e.preventDefault();
-    var n = $('qNotice'); n.hidden = false;
-    n.textContent = '已收到 ' + $('qName').value + ' 的估價需求（展示版，尚未連接後端）。\n\n' + lastQuote + '\n聯絡方式：' + $('qTel').value;
+    var n = $('qNotice');
+    if(!calc()){ n.hidden = false; n.textContent = '請先選擇至少一個施作區域。'; return; }
+    var msg = '您好，我在官網做了線上估價，想請你們安排現場勘查：\n稱呼：' + $('qName').value + '\n電話：' + $('qTel').value + ($('qPlace').value ? '\n地點：' + $('qPlace').value : '') + '\n\n' + lastQuote;
+    var id = String(C.line||'').replace(/^@/, '');
+    var url = id ? 'https://line.me/R/oaMessage/%40' + encodeURIComponent(id) + '/?' + encodeURIComponent(msg) : (C.lineUrl || '#contact');
+    n.hidden = false; n.textContent = '正在開啟 LINE，估價內容已幫您填好，按傳送就完成了。若沒有自動開啟，請加入 LINE ' + (C.line||'') + ' 後貼上估價內容。';
+    try{ navigator.clipboard && navigator.clipboard.writeText(msg); }catch(err){}
+    window.open(url, '_blank', 'noopener');
   });
 
   // 聯絡
@@ -755,6 +877,7 @@ footer img{height:28px;width:auto}
 
 /* 線上估價區：按鈕不做動畫 */
 #quote .ripple{display:none}
+#qSheetTop{scroll-margin-top:84px}
 #quote .opt span,#quote .btn{transition:none}
 #quote .opt:active span,#quote .btn:active{transform:none}
 #quote .btn-gold:hover{box-shadow:none}

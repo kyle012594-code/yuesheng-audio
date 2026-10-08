@@ -150,7 +150,7 @@ window.SITE_DATA = {
 
   /* 自動回覆規則：訪客訊息只要含任一關鍵字，就回覆該答案。前 4 題會顯示成快速按鈕 */
   faq: [
-    { keywords: ["報價", "價格", "多少錢", "費用", "預算", "估價"], q: "報價怎麼算？", a: "可以先用網站上的「線上估價」算出參考區間。正式報價會先到現場勘查，依空間大小、用途與設備等級提供詳細報價單，報價單有效期限為 30 天。", link: "#quote", linkText: "前往線上估價" },
+    { keywords: ["報價", "價格", "多少錢", "費用", "預算", "估價"], q: "報價怎麼算？", a: "可以先用網站上的「線上估價」挑選要做的區域，馬上產生一份逐項列出的參考報價單，也能直接用 LINE 傳給我們。正式報價會先到現場勘查，依空間大小、用途與設備等級提供詳細報價單，報價單有效期限為 30 天。", link: "#quote", linkText: "前往線上估價" },
     { keywords: ["建案", "實績", "案例", "作品", "做過"], q: "做過哪些建案？", a: "我們與興富發、甲山林、潤隆、達麗、寶佳、遠雄、三發等建設集團長期合作，完成市政一號院、新竹帝寶、合謙耀時代、三發首席大院等指標建案的公設影音工程。", link: "#projects", linkText: "看建案實績" },
     { keywords: ["line", "LINE", "賴", "加好友"], q: "可以用 LINE 聯絡嗎？", a: "可以，加入悅聲 LINE 官方帳號（@498csdar）就能直接傳訊息、照片或平面圖給我們。", link: "https://line.me/R/ti/p/@498csdar", linkText: "加入 LINE 好友" },
     { keywords: ["時間", "營業", "幾點", "上班", "假日", "晚上"], q: "營業時間？", a: "我們 24 小時營業，任何時間都可以來電 0987-332-776 或傳 LINE。" },
@@ -177,31 +177,93 @@ window.SITE_DATA = {
    * 喇叭數量 = 坪數 ÷ 每支喇叭涵蓋坪數（至少 2 支）
    */
   quote: {
-    note: "此為依空間與需求推算的參考區間（未稅），正式金額以現場勘查後的報價單為準。",
-    rangePercent: 10,
+    note: "以上為依公司歷年報價單整理的參考價格（未稅），正式金額以現場勘查後的報價單為準。",
     taxPercent: 5,
-    venues: [
-      { id: "lobby", name: "住宅公設（大廳／健身房／交誼廳）", amp: 15000, speakerName: "8 吋吸頂喇叭", speakerPrice: 2600, pingPerSpeaker: 8, labor: 8000, material: 10000, test: 8000 },
-      { id: "meeting", name: "會議室", amp: 15000, speakerName: "吸頂喇叭", speakerPrice: 2600, pingPerSpeaker: 10, labor: 10000, material: 10000, test: 8000 },
-      { id: "ktv", name: "KTV 包廂／招待所", amp: 25000, speakerName: "歌唱喇叭（每支）", speakerPrice: 9000, pingPerSpeaker: 12, labor: 10000, material: 10000, test: 10000 },
-      { id: "theater", name: "家庭劇院／視聽室", amp: 30000, speakerName: "劇院喇叭（每支）", speakerPrice: 8000, pingPerSpeaker: 4, labor: 12000, material: 12000, test: 10000 },
-      { id: "retail", name: "餐廳／商業空間／接待中心", amp: 15000, speakerName: "吸頂或壁掛喇叭", speakerPrice: 2600, pingPerSpeaker: 8, labor: 10000, material: 12000, test: 8000 },
-      { id: "hall", name: "宴會廳／禮堂／電影院", amp: 60000, speakerName: "專業喇叭（每支）", speakerPrice: 15000, pingPerSpeaker: 20, labor: 30000, material: 25000, test: 20000 }
+    validDays: 30,
+    transformer: { name: "變壓器", unit: "只", price: 400 },
+    work: [
+      { name: "配線、配管、工資", base: 11000, perSpeaker: 700 },
+      { name: "線材、五金另料", base: 11000, perSpeaker: 700 },
+      { name: "安裝測試", base: 7000, perSpeaker: 650 }
     ],
-    features: [
-      { id: "bgm", name: "背景音樂", price: 0 },
-      { id: "zone", name: "分區廣播／緊急廣播", price: 20000 },
-      { id: "mic", name: "UHF 無線麥克風", price: 15000 },
-      { id: "sub", name: "超重低音", price: 18000 },
-      { id: "ktvsys", name: "點歌系統", price: 40000 },
-      { id: "vc", name: "視訊會議", price: 80000 },
-      { id: "display", name: "投影機＋電動布幕", price: 60000 },
-      { id: "power", name: "電源時序控制", price: 8000 }
+    amps: [
+      { id: "a150", name: "MUSICAL 150W 公共廣播擴大機", maxSpeakers: 8, price: 15000 },
+      { id: "a250", name: "MUSICAL 250W 公共廣播擴大機（五區、藍芽 USB）", maxSpeakers: 20, price: 25000 },
+      { id: "a350", name: "MUSICAL 350W 公共廣播擴大機", maxSpeakers: 30, price: 35000 },
+      { id: "a5z", name: "MUSICAL 五區公共廣播擴大機", maxSpeakers: 999, price: 47000 }
     ],
-    tiers: [
-      { id: "std", name: "標準", mult: 1 },
-      { id: "pro", name: "進階", mult: 1.35 },
-      { id: "flag", name: "旗艦", mult: 1.8 }
+    speakers: [
+      { id: "mus8", name: "MUSICAL 8 吋雙音路吸頂喇叭（含變壓器）", short: "標準 MUSICAL 8 吋", unit: "只", price: 2600, transformer: false },
+      { id: "top55", name: "KARMEN TOP-55 吸頂喇叭", short: "進階 KARMEN TOP-55", unit: "只", price: 6500, transformer: true },
+      { id: "top8", name: "KARMEN TOP-8 吸頂喇叭（挑高區）", short: "挑高 KARMEN TOP-8", unit: "只", price: 9000, transformer: true },
+      { id: "bose", name: "BOSE DM6C 天花喇叭", short: "旗艦 BOSE", unit: "只", price: 16100, transformer: false },
+      { id: "outdoor", name: "戶外防水造景喇叭", short: "戶外防水造景", unit: "只", price: 12000, transformer: false }
+    ],
+    areas: [
+      { id: "lobby", name: "大廳／梯廳／走道", mode: "bgm", ping: 80, pingPerSpeaker: 5, speaker: "mus8" },
+      { id: "gym", name: "健身房", mode: "bgm", ping: 30, pingPerSpeaker: 5, speaker: "mus8" },
+      { id: "room", name: "瑜珈室／媽媽教室／兒童室", mode: "bgm", ping: 25, pingPerSpeaker: 5, speaker: "mus8" },
+      { id: "pool", name: "游泳池／戶外庭園", mode: "bgm", ping: 50, pingPerSpeaker: 5, speaker: "outdoor" },
+      { id: "shop", name: "餐廳／接待中心／展示空間", mode: "bgm", ping: 40, pingPerSpeaker: 5, speaker: "mus8" },
+      { id: "meeting", name: "會議室／小教室", mode: "pack", items: [
+        ["KARMEN X-3 擴大機 180W", 1, "台", 18000],
+        ["KARMEN 8 吋壁掛喇叭 SP-3080", 1, "對", 15000],
+        ["KARMEN MU-200 無線麥克風", 1, "組", 8500],
+        ["喇叭吊架", 1, "對", 1200],
+        ["藍芽、USB 撥放器", 1, "個", 2000],
+        ["配線、線材、安裝測試", 1, "式", 18000]
+      ] },
+      { id: "hall", name: "大教室／講堂／活動場地", mode: "pack", items: [
+        ["KARMEN X-6 擴大機 250W", 1, "台", 22000],
+        ["KARMEN 10 吋懸吊喇叭 K-1010", 1, "對", 23000],
+        ["KARMEN MU-600 無線麥克風", 2, "組", 15000],
+        ["HDMI 四入傳輸分配器", 1, "個", 6000],
+        ["喇叭吊架", 1, "對", 1200],
+        ["藍芽、USB 撥放器", 1, "個", 2000],
+        ["配線、線材、安裝測試", 1, "式", 25000]
+      ] },
+      { id: "ktv", name: "KTV 包廂", mode: "pack", items: [
+        ["觸控點歌機（4K、三十萬首）", 1, "台", 22000],
+        ["KARMEN X-8 KTV 擴大機", 1, "台", 25000],
+        ["KARMEN MU-600 無線麥克風", 1, "組", 13000],
+        ["JBL Pasion 10 懸吊喇叭", 1, "對", 28000],
+        ["MUSICAL TOP-8 環繞喇叭", 1, "對", 22000],
+        ["線材、五金零料", 1, "式", 7500],
+        ["施工安裝測試", 1, "式", 7500]
+      ] },
+      { id: "theater", name: "家庭劇院／視聽室", mode: "pack", items: [
+        ["ONKYO TX-NR7100 劇院擴大機", 1, "台", 46000],
+        ["影音撥放器（或 Apple TV）", 1, "台", 6000],
+        ["JBL Pasion 10 主喇叭", 1, "組", 32000],
+        ["MUSICAL H-66C 中置喇叭", 1, "只", 38000],
+        ["MUSICAL TOP-8 環繞喇叭", 2, "對", 22000],
+        ["MUSICAL W-10 重低音喇叭", 1, "只", 38000],
+        ["HDMI 延伸器", 1, "組", 6500],
+        ["線材、五金零料", 1, "式", 18000],
+        ["施工安裝測試", 1, "式", 20000]
+      ] }
+    ],
+    extras: [
+      { id: "mic", name: "KARMEN MU-600 無線麥克風（一組兩支）", unit: "組", price: 15000 },
+      { id: "vol", name: "音量控制開關", unit: "只", price: 1250 },
+      { id: "bt", name: "藍芽、USB 撥放器", unit: "個", price: 2000 },
+      { id: "tv", name: "75 吋電視（含壁架、安裝）", unit: "台", price: 63000 },
+      { id: "proj", name: "雷射投影機＋135 吋布幕（含吊架、安裝）", unit: "組", price: 178500 },
+      { id: "cctv", name: "監視系統（8 路錄影主機＋8 支攝影機＋螢幕）", unit: "套", price: 58000 },
+      { id: "move", name: "喇叭移位", unit: "台", price: 4000 }
+    ],
+    presets: [
+      { name: "建案公設", areas: [["lobby", 80], ["gym", 30], ["room", 25], ["pool", 50]] },
+      { name: "接待中心", areas: [["shop", 60], ["meeting", 1]] },
+      { name: "會議室", areas: [["meeting", 1]] },
+      { name: "豪宅影音", areas: [["theater", 1], ["ktv", 1]] }
+    ],
+    terms: [
+      "本估價單有效期限為 30 天。",
+      "未含水電配電、配管，以及木作開孔、泥作、鑿洞。",
+      "主機櫃須預留 110V 電源一座，配管建議使用六分 CD 管。",
+      "如產品停產或庫存不足，以同等級性能之機型出貨。",
+      "付款方式：訂金 50%，安裝完成驗收後付尾款 50%（建案工程可依合約分期）。"
     ]
   }
 };

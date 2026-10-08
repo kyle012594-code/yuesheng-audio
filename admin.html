@@ -75,7 +75,7 @@ textarea.inp{min-height:90px;resize:vertical}
 <script>
 (function(){
   var D;
-  try{ D = JSON.parse(localStorage.getItem('ys-site-draft-v2') || 'null'); }catch(e){}
+  try{ D = JSON.parse(localStorage.getItem('ys-site-draft-v3') || 'null'); }catch(e){}
   if(!D || !D.company) D = JSON.parse(JSON.stringify(window.SITE_DATA));
   var $ = function(id){ return document.getElementById(id); };
   var esc = function(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
@@ -98,29 +98,37 @@ textarea.inp{min-height:90px;resize:vertical}
       label:function(x){return x.q;}, sub:function(x){return (x.keywords||[]).join('、');},
       blank:{q:'新問題',keywords:[],a:'',link:'',linkText:''},
       fields:[['q','問題（顯示在快速按鈕）','text'],['keywords','關鍵字（用逗號分隔）','csv'],['a','回答','textarea'],['link','附帶連結（例：#quote）','text'],['linkText','連結文字','text']] },
-    venues: { title:'估價：場地類型', path:['quote','venues'], hint:'估價 =（擴大機 + 喇叭單價 × 喇叭數 + 配線配管工資 + 線材五金 + 安裝測試 + 功能加價）× 等級倍率，再上下浮動 ' + D.quote.rangePercent + '%。喇叭數 = 坪數 ÷ 每支喇叭涵蓋坪數。', idPrefix:'v',
-      label:function(x){return x.name;}, sub:function(x){return '擴大機 '+x.amp+'・喇叭 '+x.speakerPrice+'／支';},
-      blank:{name:'新場地',amp:15000,speakerName:'吸頂喇叭',speakerPrice:2600,pingPerSpeaker:8,labor:8000,material:10000,test:8000},
-      fields:[['name','場地名稱','text'],['amp','擴大機（元）','number'],['speakerName','喇叭名稱','text'],['speakerPrice','喇叭單價（元／支）','number'],['pingPerSpeaker','每支喇叭涵蓋坪數','number'],['labor','配線、配管、工資（元）','number'],['material','線材、五金另料（元）','number'],['test','安裝測試（元）','number']] },
-    features: { title:'估價：功能加價', path:['quote','features'], hint:'每個功能固定加價的金額。填 0 表示包含在基本工程。', idPrefix:'f',
-      label:function(x){return x.name;}, sub:function(x){return '+ '+x.price;},
-      blank:{name:'新功能',price:0}, fields:[['name','功能名稱','text'],['price','加價（元）','number']] },
-    tiers: { title:'估價：設備等級', path:['quote','tiers'], hint:'倍率 1 為標準價。', idPrefix:'t',
-      label:function(x){return x.name;}, sub:function(x){return '× '+x.mult;},
-      blank:{name:'新等級',mult:1}, fields:[['name','等級名稱','text'],['mult','倍率','number']] }
+    areas: { title:'估價：區域類型', path:['quote','areas'], hint:'「背景音樂」區域會依坪數自動算喇叭數（坪數 ÷ 每支喇叭涵蓋坪數），再依喇叭數自動配擴大機、變壓器與施工費。「整套設備」區域（會議室、KTV、劇院）直接列出下面的品項，一行一項，格式：品名｜數量｜單位｜單價。', idPrefix:'a',
+      label:function(x){return x.name;}, sub:function(x){return x.mode==='pack' ? '整套設備・'+(x.items||[]).length+' 項' : '背景音樂・每 '+x.pingPerSpeaker+' 坪一支';},
+      blank:{name:'新區域',mode:'bgm',ping:30,pingPerSpeaker:5,speaker:'mus8',items:[]},
+      fields:[['name','區域名稱','text'],['mode','計算方式','select',[['bgm','背景音樂（依坪數算喇叭）'],['pack','整套設備（固定品項）']]],['ping','預設坪數（背景音樂用）','number'],['pingPerSpeaker','每支喇叭涵蓋坪數（背景音樂用）','number'],['speaker','預設喇叭（背景音樂用）','select','speakers'],['items','整套設備品項（品名｜數量｜單位｜單價）','items']] },
+    speakers: { title:'估價：喇叭等級', path:['quote','speakers'], hint:'背景音樂區域可選的喇叭。勾選「另加變壓器」時，每支喇叭會多列一只變壓器。', idPrefix:'s',
+      label:function(x){return x.name;}, sub:function(x){return x.price+' 元／'+x.unit;},
+      blank:{name:'新喇叭',short:'',unit:'只',price:2600,transformer:false},
+      fields:[['name','報價單上的品名','text'],['short','選單上的簡稱','text'],['unit','單位','text'],['price','單價（元）','number'],['transformer','另加變壓器','check']] },
+    amps: { title:'估價：擴大機', path:['quote','amps'], hint:'依每個區域的喇叭數，自動選第一台「最多可帶喇叭數」夠用的擴大機，請由小排到大。', idPrefix:'m',
+      label:function(x){return x.name;}, sub:function(x){return x.price+' 元・最多 '+x.maxSpeakers+' 支';},
+      blank:{name:'新擴大機',maxSpeakers:10,price:15000},
+      fields:[['name','品名','text'],['maxSpeakers','最多可帶喇叭數','number'],['price','單價（元）','number']] },
+    extras: { title:'估價：加購項目', path:['quote','extras'], hint:'訪客可以自己填數量的加購品項。', idPrefix:'x',
+      label:function(x){return x.name;}, sub:function(x){return x.price+' 元／'+x.unit;},
+      blank:{name:'新項目',unit:'組',price:0},
+      fields:[['name','品名','text'],['unit','單位','text'],['price','單價（元）','number']] }
   };
-  var TABS = [['projects','建案實績'],['products','產品設備'],['gallery','施工實景'],['faq','自動回覆'],['venues','估價設定'],['company','公司資訊'],['export','匯出發布']];
+  var TABS = [['projects','建案實績'],['products','產品設備'],['gallery','施工實景'],['faq','自動回覆'],['areas','估價設定'],['company','公司資訊'],['export','匯出發布']];
+  var QTABS = ['areas','speakers','amps','extras','qset'];
   var cur = 'projects', sel = 0, pendingDel = false;
+  function qbar(key){ return '<div class="toolbar">'+QTABS.map(function(k){ return '<button class="btn'+(k===key?' gold':'')+'" data-k="'+k+'" type="button">'+(k==='qset'?'施工費與附註':S[k].title.replace('估價：',''))+'</button>'; }).join('')+'</div>'; }
 
   function arr(key){ var o=D; S[key].path.forEach(function(p){ o=o[p]; }); return o; }
   function renderTabs(){
-    $('tabs').innerHTML = TABS.map(function(t){ var on = t[0]===cur || (t[0]==='venues' && (cur==='features'||cur==='tiers')); return '<button type="button" data-t="'+t[0]+'" aria-current="'+on+'">'+t[1]+'</button>'; }).join('');
+    $('tabs').innerHTML = TABS.map(function(t){ var on = t[0]===cur || (t[0]==='areas' && QTABS.indexOf(cur)>=0); return '<button type="button" data-t="'+t[0]+'" aria-current="'+on+'">'+t[1]+'</button>'; }).join('');
   }
   $('tabs').addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b) return; cur=b.dataset.t; sel=0; pendingDel=false; render(); });
   $('goExport').onclick = function(){ cur='export'; render(); };
   $('saveDraft').onclick = saveDraft;
   function saveDraft(){
-    try{ localStorage.setItem('ys-site-draft-v2', JSON.stringify(D)); toast('草稿已儲存，回到網站即可預覽'); }
+    try{ localStorage.setItem('ys-site-draft-v3', JSON.stringify(D)); toast('草稿已儲存，回到網站即可預覽'); }
     catch(e){ toast('儲存失敗：可能是照片太大，請改用較小的照片'); }
   }
 
@@ -128,12 +136,13 @@ textarea.inp{min-height:90px;resize:vertical}
     renderTabs();
     if(cur==='company') return renderCompany();
     if(cur==='export') return renderExport();
+    if(cur==='qset') return renderQset();
     renderList(cur);
   }
 
   function renderList(key){
     var s = S[key], list = arr(key);
-    var sub = (key==='venues'||key==='features'||key==='tiers') ? '<div class="toolbar">'+['venues','features','tiers'].map(function(k){ return '<button class="btn'+(k===key?' gold':'')+'" data-k="'+k+'" type="button">'+S[k].title.replace('估價：','')+'</button>'; }).join('')+'</div>' : '';
+    var sub = QTABS.indexOf(key)>=0 ? qbar(key) : '';
     if(sel >= list.length) sel = list.length-1;
     $('main').innerHTML = '<h2>'+s.title+'</h2><p class="hint">'+esc(s.hint)+'</p>'+sub+
       '<div class="split"><div><div class="toolbar"><button class="btn gold" id="add" type="button">＋ 新增</button><button class="btn" id="up" type="button">上移</button><button class="btn" id="down" type="button">下移</button></div>'+
@@ -158,6 +167,8 @@ textarea.inp{min-height:90px;resize:vertical}
       if(t==='textarea') return '<label for="'+id+'">'+lab+'<textarea class="inp" id="'+id+'" data-f="'+k+'">'+esc(v)+'</textarea></label>';
       if(t==='lines') return '<label for="'+id+'">'+lab+'<textarea class="inp" id="'+id+'" data-f="'+k+'" data-t="lines">'+esc((v||[]).join('\n'))+'</textarea></label>';
       if(t==='csv') return '<label for="'+id+'">'+lab+'<input class="inp" id="'+id+'" data-f="'+k+'" data-t="csv" value="'+esc((v||[]).join(', '))+'"></label>';
+      if(t==='select'){ var op = f[3]==='speakers' ? D.quote.speakers.map(function(x){ return [x.id, x.short||x.name]; }) : f[3]; return '<label for="'+id+'">'+lab+'<select class="inp" id="'+id+'" data-f="'+k+'">'+op.map(function(o){ return '<option value="'+esc(o[0])+'"'+(o[0]===v?' selected':'')+'>'+esc(o[1])+'</option>'; }).join('')+'</select></label>'; }
+      if(t==='items') return '<label for="'+id+'">'+lab+'<textarea class="inp" id="'+id+'" data-f="'+k+'" data-t="items" style="min-height:180px">'+esc((v||[]).map(function(r){ return r.join('｜'); }).join('\n'))+'</textarea></label>';
       if(t==='check') return '<label class="chk" for="'+id+'"><input type="checkbox" id="'+id+'" data-f="'+k+'" data-t="check"'+(v?' checked':'')+'>'+lab+'</label>';
       if(t==='number') return '<label for="'+id+'">'+lab+'<input class="inp" type="number" step="any" id="'+id+'" data-f="'+k+'" data-t="number" value="'+esc(v)+'"></label>';
       if(t==='image') return '<label for="'+id+'">'+lab+(v?'<img class="preview" src="'+esc(v)+'" alt="">':'')+'<input class="inp" id="'+id+'" data-f="'+k+'" value="'+esc(v && v.indexOf('data:')===0 ? '（已上傳照片）' : v)+'" placeholder="assets/projects/檔名.jpg"><input type="file" accept="image/*" id="'+id+'_file" class="inp"></label>';
@@ -173,6 +184,7 @@ textarea.inp{min-height:90px;resize:vertical}
         var k=el.dataset.f, t=el.dataset.t;
         if(t==='lines') item[k] = el.value.split('\n').map(function(x){return x.trim();}).filter(Boolean);
         else if(t==='csv') item[k] = el.value.split(/[,，、]/).map(function(x){return x.trim();}).filter(Boolean);
+        else if(t==='items') item[k] = el.value.split('\n').map(function(x){ var c = x.split(/[｜|]/).map(function(y){return y.trim();}); return c[0] ? [c[0], parseFloat(c[1])||1, c[2]||'式', parseFloat(String(c[3]).replace(/,/g,''))||0] : null; }).filter(Boolean);
         else if(t==='check') item[k] = el.checked;
         else if(t==='number') item[k] = parseFloat(el.value)||0;
         else if(el.value==='（已上傳照片）') {}
@@ -199,6 +211,27 @@ textarea.inp{min-height:90px;resize:vertical}
     if($('del')) $('del').onclick = function(){ pendingDel=true; renderForm(key,item); };
     if($('delNo')) $('delNo').onclick = function(){ pendingDel=false; renderForm(key,item); };
     if($('delYes')) $('delYes').onclick = function(){ arr(key).splice(sel,1); pendingDel=false; if(sel>0) sel--; saveDraft(); renderList(key); };
+  }
+
+  function renderQset(){
+    var Q = D.quote;
+    $('main').innerHTML = '<h2>估價：施工費與附註</h2><p class="hint">背景音樂區域的施工費 = 基本金額 + 每支喇叭加價 × 喇叭數，四捨五入到千元。</p>'+qbar('qset')+
+      '<form class="form" id="qsform" style="position:static;max-width:640px">'+
+      Q.work.map(function(w,i){ return '<fieldset style="border:1px solid var(--line);padding:12px;display:grid;gap:8px"><legend>'+esc(w.name)+'</legend><label>品名<input class="inp" data-w="'+i+'" data-f="name" value="'+esc(w.name)+'"></label><label>基本金額（元）<input class="inp" type="number" data-w="'+i+'" data-f="base" value="'+w.base+'"></label><label>每支喇叭加價（元）<input class="inp" type="number" data-w="'+i+'" data-f="perSpeaker" value="'+w.perSpeaker+'"></label></fieldset>'; }).join('')+
+      '<label>變壓器單價（元）<input class="inp" type="number" id="qs_tr" value="'+Q.transformer.price+'"></label>'+
+      '<label>營業稅（%）<input class="inp" type="number" id="qs_tax" value="'+Q.taxPercent+'"></label>'+
+      '<label>報價單附註（一行一條）<textarea class="inp" id="qs_terms" style="min-height:160px">'+esc(Q.terms.join('\n'))+'</textarea></label>'+
+      '<label>估價區下方說明<textarea class="inp" id="qs_note">'+esc(Q.note)+'</textarea></label>'+
+      '<div class="actions"><button class="btn gold" type="submit">套用修改</button></div></form>';
+    [].forEach.call($('main').querySelectorAll('[data-k]'), function(b){ b.onclick=function(){ cur=b.dataset.k; sel=0; render(); }; });
+    $('qsform').addEventListener('submit', function(e){
+      e.preventDefault();
+      [].forEach.call(this.querySelectorAll('[data-w]'), function(el){ var w = Q.work[+el.dataset.w]; w[el.dataset.f] = el.dataset.f==='name' ? el.value.trim() : (parseFloat(el.value)||0); });
+      Q.transformer.price = parseFloat($('qs_tr').value)||0; Q.taxPercent = parseFloat($('qs_tax').value)||0;
+      Q.terms = $('qs_terms').value.split('\n').map(function(x){return x.trim();}).filter(Boolean);
+      Q.note = $('qs_note').value.trim();
+      saveDraft();
+    });
   }
 
   function renderCompany(){
@@ -232,7 +265,7 @@ textarea.inp{min-height:90px;resize:vertical}
     $('cp').onclick = function(){ var t=$('out'); var p = navigator.clipboard ? navigator.clipboard.writeText(t.value) : Promise.reject(); p.then(function(){toast('已複製');}, function(){ t.focus(); t.select(); toast('已選取全部內容，請按 Ctrl+C 複製'); }); };
     $('imp').onclick = function(){ $('impFile').click(); };
     $('impFile').onchange = function(){ var f=this.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(){ try{ var txt=r.result.replace(/^[\s\S]*?window\.SITE_DATA\s*=\s*/,'').replace(/;\s*$/,''); var nd=JSON.parse(txt); if(!nd.company) throw 0; D=nd; saveDraft(); renderExport(); toast('已匯入'); }catch(e){ toast('檔案格式不對，請選擇後台匯出的 data.js'); } }; r.readAsText(f); };
-    $('reset').onclick = function(){ if(this.dataset.sure){ try{localStorage.removeItem('ys-site-draft-v2');}catch(e){} D=JSON.parse(JSON.stringify(window.SITE_DATA)); renderExport(); toast('已還原正式內容'); } else { this.dataset.sure='1'; this.textContent='再按一次確認還原'; } };
+    $('reset').onclick = function(){ if(this.dataset.sure){ try{localStorage.removeItem('ys-site-draft-v3');}catch(e){} D=JSON.parse(JSON.stringify(window.SITE_DATA)); renderExport(); toast('已還原正式內容'); } else { this.dataset.sure='1'; this.textContent='再按一次確認還原'; } };
   }
 
   render();

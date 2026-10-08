@@ -111,7 +111,7 @@ p{margin:0}
 .hero .lead{margin-top:18px;font-size:clamp(1rem,1.6vw,1.15rem);color:var(--muted);max-width:30em}
 .hero .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
 .hero-img{position:relative;aspect-ratio:16/11;max-width:100%;border:1px solid var(--line)}
-.hero-img img{width:100%;height:100%;object-fit:cover;filter:grayscale(.35) contrast(1.05)}
+.hero-img img{width:100%;height:100%;object-fit:cover}
 .hero-img::after{content:"";position:absolute;inset:0;background:linear-gradient(200deg,transparent 40%,rgba(13,12,10,.85)),linear-gradient(90deg,rgba(201,162,74,.18),transparent 50%)}
 .meter{position:absolute;left:18px;bottom:16px;z-index:2;display:flex;gap:4px;align-items:flex-end;height:44px}
 .meter i{display:block;width:5px;background:linear-gradient(0deg,var(--gold),var(--gold-hi));animation:lv 1.4s ease-in-out infinite alternate;height:30%}
@@ -314,7 +314,7 @@ footer img{height:28px;width:auto}
       </div>
     </div>
     <figure class="hero-img" style="margin:0">
-      <img src="assets/hero.jpg" alt="專業喇叭與數位混音座">
+      <img src="assets/hero.jpg" alt="悅聲完工實景：住宅客廳家庭劇院">
       <div class="meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <figcaption class="meter-cap">Since 2000 · Taoyuan</figcaption>
     </figure>
@@ -565,7 +565,7 @@ footer img{height:28px;width:auto}
 
   // 共用彈窗
   function openModal(o){
-    $('mImg').src = o.image || 'assets/hero.jpg'; $('mImg').alt = o.title; $('mImg').style.objectFit = o.fit || 'cover';
+    $('mImg').src = o.image || 'assets/logo.png'; $('mImg').alt = o.title; $('mImg').style.objectFit = o.image ? (o.fit || 'cover') : 'contain'; $('mImg').style.padding = o.image ? '0' : '15%';
     $('mDev').textContent = o.eyebrow || ''; $('mTitle').textContent = o.title;
     $('mMeta').textContent = o.meta || ''; $('mSum').textContent = o.summary || '';
     $('mSys').innerHTML = (o.list||[]).map(function(s){ return '<li>'+esc(s)+'</li>'; }).join('');

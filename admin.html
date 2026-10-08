@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>悅聲內容管理</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700&display=swap">
+<style>
+/* Layout: 左側分頁、右側清單＋編輯表單的後台 */
+:root{
+  --ink:#0d0c0a;--panel:#17150f;--panel-2:#211d14;--fg:#f2ecdd;--muted:#a89e88;--gold:#c9a24a;--gold-hi:#e8cd84;--line:rgba(201,162,74,.28);--danger:#e08a7a;
+  --display:"Noto Serif TC","Songti TC",serif;--body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--ink);color:var(--fg);font:15px/1.6 var(--body)}
+:focus-visible{outline:2px solid var(--gold-hi);outline-offset:2px}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;padding:14px clamp(16px,3vw,32px);border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);background:rgba(13,12,10,.95);z-index:5}
+header img{height:30px}
+header h1{font:700 1.05rem var(--display);letter-spacing:.1em;margin:0;flex:1;min-width:8em}
+.btn{font:500 .88rem var(--body);padding:8px 14px;border:1px solid var(--gold);background:transparent;color:var(--gold-hi);border-radius:2px;cursor:pointer;text-decoration:none}
+.btn.gold{background:var(--gold);color:var(--ink)}
+.btn.danger{border-color:var(--danger);color:var(--danger)}
+.layout{display:grid;grid-template-columns:200px minmax(0,1fr);min-height:calc(100vh - 60px)}
+nav{border-right:1px solid var(--line);padding:16px 0}
+nav button{display:block;width:100%;text-align:left;font:inherit;padding:11px 24px;background:none;border:0;color:var(--muted);cursor:pointer;border-left:2px solid transparent}
+nav button[aria-current="true"]{color:var(--fg);border-left-color:var(--gold);background:var(--panel)}
+main{padding:24px clamp(16px,3vw,32px) 64px;min-width:0}
+h2{font:700 1.4rem var(--display);margin:0 0 4px}
+.hint{color:var(--muted);font-size:.88rem;margin:0 0 20px;max-width:70ch}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:24px;align-items:start}
+.list{border:1px solid var(--line)}
+.row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid var(--line);cursor:pointer;min-width:0}
+.row:last-child{border-bottom:0}
+.row:hover{background:var(--panel)}
+.row[aria-selected="true"]{background:var(--panel-2)}
+.row img,.row .noimg{width:48px;height:48px;object-fit:cover;flex:none;background:var(--panel-2)}
+.row div{min-width:0}
+.row b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row small{color:var(--muted)}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.form{border:1px solid var(--gold);background:var(--panel);padding:20px;display:grid;gap:14px;position:sticky;top:80px}
+.form label{display:grid;gap:6px;font-size:.82rem;letter-spacing:.08em;color:var(--gold)}
+.inp{width:100%;background:var(--ink);border:1px solid var(--line);color:var(--fg);padding:9px 12px;font:inherit;font-size:.95rem;border-radius:2px;letter-spacing:0}
+.inp:focus{border-color:var(--gold);outline:none}
+textarea.inp{min-height:90px;resize:vertical}
+.form .chk{display:flex;align-items:center;gap:8px;color:var(--fg);letter-spacing:0}
+.preview{max-height:160px;object-fit:cover;border:1px solid var(--line)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--gold);color:var(--ink);padding:10px 18px;font-weight:700;border-radius:2px;z-index:20}
+.confirm{display:flex;gap:8px;align-items:center;font-size:.85rem;color:var(--danger)}
+.out{width:100%;min-height:260px;font:12px/1.5 ui-monospace,Menlo,monospace;background:var(--ink);color:var(--fg);border:1px solid var(--line);padding:12px}
+.steps{margin:0 0 20px;padding-left:1.3em;color:var(--muted);font-size:.9rem;max-width:70ch}
+.steps b{color:var(--fg)}
+@media (max-width:860px){.layout{grid-template-columns:1fr}nav{display:flex;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line);padding:0}nav button{white-space:nowrap;border-left:0;border-bottom:2px solid transparent;padding:12px 16px;width:auto}nav button[aria-current="true"]{border-bottom-color:var(--gold)}.split{grid-template-columns:1fr}.form{position:static}}
+</style>
+</head>
+<body>
+<header>
+  <img src="assets/logo.png" alt="悅聲">
+  <h1>內容管理後台</h1>
+  <button class="btn" id="saveDraft" type="button">儲存草稿並預覽</button>
+  <a class="btn" href="index.html">回到網站</a>
+  <button class="btn gold" id="goExport" type="button">匯出發布</button>
+</header>
+<div class="layout">
+  <nav id="tabs" aria-label="管理項目"></nav>
+  <main id="main"></main>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="assets/data.js"></script>
+<script>
+(function(){
+  var D;
+  try{ D = JSON.parse(localStorage.getItem('ys-site-draft-v2') || 'null'); }catch(e){}
+  if(!D || !D.company) D = JSON.parse(JSON.stringify(window.SITE_DATA));
+  var $ = function(id){ return document.getElementById(id); };
+  var esc = function(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
+  function toast(t){ var el=$('toast'); el.textContent=t; el.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(function(){el.hidden=true;},2200); }
+
+  // 每種清單的欄位定義
+  var S = {
+    projects: { title:'建案實績', path:['projects'], hint:'新增或修改網站上的建案。照片可以直接上傳（會自動縮圖），或填入 assets/projects/ 裡的檔名。', idPrefix:'p',
+      label:function(x){return x.name;}, sub:function(x){return x.developer;}, img:function(x){return x.image;},
+      blank:{name:'新建案',developer:'',category:'住宅建案',city:'',year:'',image:'',summary:'',systems:[]},
+      fields:[['name','建案名稱','text'],['developer','建設公司','text','devs'],['category','類型','text'],['city','城市','text'],['year','完工年份','text'],['image','照片','image'],['summary','工程說明','textarea'],['systems','施作系統（一行一項）','lines']] },
+    products: { title:'產品設備', path:['products'], hint:'新增產品後取消勾選「範例品項」，網站上就不會出現範例標籤。', idPrefix:'d',
+      label:function(x){return x.name;}, sub:function(x){return x.category + (x.sample?'・範例':'');}, img:function(x){return x.image;},
+      blank:{name:'新產品',category:'喇叭',image:'',desc:'',specs:[],sample:false},
+      fields:[['name','產品名稱','text'],['category','分類','text'],['image','照片','image'],['desc','說明','textarea'],['specs','規格重點（一行一項）','lines'],['sample','範例品項','check']] },
+    gallery: { title:'施工實景', path:['gallery'], hint:'首頁「施工實景」區的照片。',
+      label:function(x){return x.caption;}, sub:function(){return '';}, img:function(x){return x.image;},
+      blank:{image:'',caption:'新照片'}, fields:[['caption','說明','text'],['image','照片','image']] },
+    faq: { title:'自動回覆', path:['faq'], hint:'訪客在線上小幫手輸入的訊息，只要包含任一關鍵字，就會收到對應的回答。前四題會顯示成快速按鈕。',
+      label:function(x){return x.q;}, sub:function(x){return (x.keywords||[]).join('、');},
+      blank:{q:'新問題',keywords:[],a:'',link:'',linkText:''},
+      fields:[['q','問題（顯示在快速按鈕）','text'],['keywords','關鍵字（用逗號分隔）','csv'],['a','回答','textarea'],['link','附帶連結（例：#quote）','text'],['linkText','連結文字','text']] },
+    venues: { title:'估價：場地類型', path:['quote','venues'], hint:'估價 =（擴大機 + 喇叭單價 × 喇叭數 + 配線配管工資 + 線材五金 + 安裝測試 + 功能加價）× 等級倍率，再上下浮動 ' + D.quote.rangePercent + '%。喇叭數 = 坪數 ÷ 每支喇叭涵蓋坪數。', idPrefix:'v',
+      label:function(x){return x.name;}, sub:function(x){return '擴大機 '+x.amp+'・喇叭 '+x.speakerPrice+'／支';},
+      blank:{name:'新場地',amp:15000,speakerName:'吸頂喇叭',speakerPrice:2600,pingPerSpeaker:8,labor:8000,material:10000,test:8000},
+      fields:[['name','場地名稱','text'],['amp','擴大機（元）','number'],['speakerName','喇叭名稱','text'],['speakerPrice','喇叭單價（元／支）','number'],['pingPerSpeaker','每支喇叭涵蓋坪數','number'],['labor','配線、配管、工資（元）','number'],['material','線材、五金另料（元）','number'],['test','安裝測試（元）','number']] },
+    features: { title:'估價：功能加價', path:['quote','features'], hint:'每個功能固定加價的金額。填 0 表示包含在基本工程。', idPrefix:'f',
+      label:function(x){return x.name;}, sub:function(x){return '+ '+x.price;},
+      blank:{name:'新功能',price:0}, fields:[['name','功能名稱','text'],['price','加價（元）','number']] },
+    tiers: { title:'估價：設備等級', path:['quote','tiers'], hint:'倍率 1 為標準價。', idPrefix:'t',
+      label:function(x){return x.name;}, sub:function(x){return '× '+x.mult;},
+      blank:{name:'新等級',mult:1}, fields:[['name','等級名稱','text'],['mult','倍率','number']] }
+  };
+  var TABS = [['projects','建案實績'],['products','產品設備'],['gallery','施工實景'],['faq','自動回覆'],['venues','估價設定'],['company','公司資訊'],['export','匯出發布']];
+  var cur = 'projects', sel = 0, pendingDel = false;
+
+  function arr(key){ var o=D; S[key].path.forEach(function(p){ o=o[p]; }); return o; }
+  function renderTabs(){
+    $('tabs').innerHTML = TABS.map(function(t){ var on = t[0]===cur || (t[0]==='venues' && (cur==='features'||cur==='tiers')); return '<button type="button" data-t="'+t[0]+'" aria-current="'+on+'">'+t[1]+'</button>'; }).join('');
+  }
+  $('tabs').addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b) return; cur=b.dataset.t; sel=0; pendingDel=false; render(); });
+  $('goExport').onclick = function(){ cur='export'; render(); };
+  $('saveDraft').onclick = saveDraft;
+  function saveDraft(){
+    try{ localStorage.setItem('ys-site-draft-v2', JSON.stringify(D)); toast('草稿已儲存，回到網站即可預覽'); }
+    catch(e){ toast('儲存失敗：可能是照片太大，請改用較小的照片'); }
+  }
+
+  function render(){
+    renderTabs();
+    if(cur==='company') return renderCompany();
+    if(cur==='export') return renderExport();
+    renderList(cur);
+  }
+
+  function renderList(key){
+    var s = S[key], list = arr(key);
+    var sub = (key==='venues'||key==='features'||key==='tiers') ? '<div class="toolbar">'+['venues','features','tiers'].map(function(k){ return '<button class="btn'+(k===key?' gold':'')+'" data-k="'+k+'" type="button">'+S[k].title.replace('估價：','')+'</button>'; }).join('')+'</div>' : '';
+    if(sel >= list.length) sel = list.length-1;
+    $('main').innerHTML = '<h2>'+s.title+'</h2><p class="hint">'+esc(s.hint)+'</p>'+sub+
+      '<div class="split"><div><div class="toolbar"><button class="btn gold" id="add" type="button">＋ 新增</button><button class="btn" id="up" type="button">上移</button><button class="btn" id="down" type="button">下移</button></div>'+
+      '<div class="list" role="listbox" id="list">'+list.map(function(x,i){
+        var im = s.img ? (s.img(x) ? '<img src="'+esc(s.img(x))+'" alt="">' : '<span class="noimg"></span>') : '';
+        return '<div class="row" role="option" data-i="'+i+'" aria-selected="'+(i===sel)+'" tabindex="0">'+im+'<div><b>'+esc(s.label(x)||'（未命名）')+'</b><small>'+esc(s.sub(x)||'')+'</small></div></div>';
+      }).join('')+'</div></div><div id="formWrap"></div></div>';
+    [].forEach.call($('main').querySelectorAll('[data-k]'), function(b){ b.onclick=function(){ cur=b.dataset.k; sel=0; render(); }; });
+    $('list').addEventListener('click', pick); $('list').addEventListener('keydown', function(e){ if(e.key==='Enter') pick(e); });
+    function pick(e){ var r=e.target.closest('.row'); if(!r) return; sel=+r.dataset.i; pendingDel=false; renderList(key); }
+    $('add').onclick = function(){ var n = JSON.parse(JSON.stringify(s.blank)); if(s.idPrefix) n.id = s.idPrefix + Date.now().toString(36); list.unshift(n); sel=0; renderList(key); toast('已新增，請在右側填寫內容'); };
+    $('up').onclick = function(){ if(sel>0){ var t=list[sel]; list[sel]=list[sel-1]; list[sel-1]=t; sel--; renderList(key); } };
+    $('down').onclick = function(){ if(sel<list.length-1){ var t=list[sel]; list[sel]=list[sel+1]; list[sel+1]=t; sel++; renderList(key); } };
+    if(list[sel]) renderForm(key, list[sel]); else $('formWrap').innerHTML = '<p class="hint">目前沒有資料，按「新增」建立第一筆。</p>';
+  }
+
+  function renderForm(key, item){
+    var s = S[key];
+    var devs = D.developers.map(function(d){ return d.name; });
+    var html = s.fields.map(function(f){
+      var k=f[0], lab=f[1], t=f[2], v=item[k], id='f_'+k;
+      if(t==='textarea') return '<label for="'+id+'">'+lab+'<textarea class="inp" id="'+id+'" data-f="'+k+'">'+esc(v)+'</textarea></label>';
+      if(t==='lines') return '<label for="'+id+'">'+lab+'<textarea class="inp" id="'+id+'" data-f="'+k+'" data-t="lines">'+esc((v||[]).join('\n'))+'</textarea></label>';
+      if(t==='csv') return '<label for="'+id+'">'+lab+'<input class="inp" id="'+id+'" data-f="'+k+'" data-t="csv" value="'+esc((v||[]).join(', '))+'"></label>';
+      if(t==='check') return '<label class="chk" for="'+id+'"><input type="checkbox" id="'+id+'" data-f="'+k+'" data-t="check"'+(v?' checked':'')+'>'+lab+'</label>';
+      if(t==='number') return '<label for="'+id+'">'+lab+'<input class="inp" type="number" step="any" id="'+id+'" data-f="'+k+'" data-t="number" value="'+esc(v)+'"></label>';
+      if(t==='image') return '<label for="'+id+'">'+lab+(v?'<img class="preview" src="'+esc(v)+'" alt="">':'')+'<input class="inp" id="'+id+'" data-f="'+k+'" value="'+esc(v && v.indexOf('data:')===0 ? '（已上傳照片）' : v)+'" placeholder="assets/projects/檔名.jpg"><input type="file" accept="image/*" id="'+id+'_file" class="inp"></label>';
+      return '<label for="'+id+'">'+lab+'<input class="inp" id="'+id+'" data-f="'+k+'" value="'+esc(v)+'"'+(f[3]==='devs'?' list="devList"':'')+'></label>';
+    }).join('');
+    $('formWrap').innerHTML = '<form class="form" id="form">'+html+'<datalist id="devList">'+devs.map(function(d){return '<option value="'+esc(d)+'">';}).join('')+'</datalist>'+
+      '<div class="actions"><button class="btn gold" type="submit">套用修改</button>'+
+      (pendingDel ? '<span class="confirm">確定刪除？<button class="btn danger" type="button" id="delYes">刪除</button><button class="btn" type="button" id="delNo">取消</button></span>' : '<button class="btn danger" type="button" id="del">刪除這筆</button>')+'</div></form>';
+    var form = $('form');
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      [].forEach.call(form.querySelectorAll('[data-f]'), function(el){
+        var k=el.dataset.f, t=el.dataset.t;
+        if(t==='lines') item[k] = el.value.split('\n').map(function(x){return x.trim();}).filter(Boolean);
+        else if(t==='csv') item[k] = el.value.split(/[,，、]/).map(function(x){return x.trim();}).filter(Boolean);
+        else if(t==='check') item[k] = el.checked;
+        else if(t==='number') item[k] = parseFloat(el.value)||0;
+        else if(el.value==='（已上傳照片）') {}
+        else item[k] = el.value.trim();
+      });
+      saveDraft(); renderList(key);
+    });
+    var file = form.querySelector('input[type=file]');
+    if(file) file.onchange = function(){
+      var f = file.files[0]; if(!f) return;
+      var r = new FileReader();
+      r.onload = function(){
+        var img = new Image();
+        img.onload = function(){
+          var sc = Math.min(1, 1000/Math.max(img.width,img.height)), c = document.createElement('canvas');
+          c.width = Math.round(img.width*sc); c.height = Math.round(img.height*sc);
+          c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+          item.image = c.toDataURL('image/jpeg', .8); saveDraft(); renderList(key);
+        };
+        img.src = r.result;
+      };
+      r.readAsDataURL(f);
+    };
+    if($('del')) $('del').onclick = function(){ pendingDel=true; renderForm(key,item); };
+    if($('delNo')) $('delNo').onclick = function(){ pendingDel=false; renderForm(key,item); };
+    if($('delYes')) $('delYes').onclick = function(){ arr(key).splice(sel,1); pendingDel=false; if(sel>0) sel--; saveDraft(); renderList(key); };
+  }
+
+  function renderCompany(){
+    var C = D.company;
+    var F = [['name','公司全名'],['shortName','網站顯示名稱'],['tagline','首頁標語'],['foundedText','成立時間（文字）'],['founded','成立年份（數字）'],['chairman','董事長'],['staff','員工人數'],['taxId','統一編號'],['address','地址'],['phone','電話'],['email','Email'],['line','LINE ID'],['lineUrl','LINE 加好友連結'],['hours','營業時間']];
+    $('main').innerHTML = '<h2>公司資訊</h2><p class="hint">標示「待提供」的欄位請補上正式資料。</p><form class="form" id="cform" style="position:static;max-width:640px">'+
+      F.map(function(f){ return '<label for="c_'+f[0]+'">'+f[1]+'<input class="inp" id="c_'+f[0]+'" data-f="'+f[0]+'" value="'+esc(C[f[0]])+'"></label>'; }).join('')+
+      '<label for="c_intro">公司簡介（一行一段）<textarea class="inp" id="c_intro" style="min-height:220px">'+esc((C.intro||[]).join('\n'))+'</textarea></label>'+
+      '<label for="c_values">經營理念（逗號分隔）<input class="inp" id="c_values" value="'+esc(C.values.join(', '))+'"></label>'+
+      '<label for="c_greet">小幫手開場白<textarea class="inp" id="c_greet">'+esc(D.chatGreeting)+'</textarea></label>'+
+      '<label for="c_fb">小幫手答不出來時的回覆<textarea class="inp" id="c_fb">'+esc(D.chatFallback)+'</textarea></label>'+
+      '<div class="actions"><button class="btn gold" type="submit">套用修改</button></div></form>';
+    $('cform').addEventListener('submit', function(e){
+      e.preventDefault();
+      [].forEach.call(this.querySelectorAll('[data-f]'), function(el){ var k=el.dataset.f; C[k] = (k==='founded'||k==='staff') ? (parseInt(el.value,10)||0) : el.value.trim(); });
+      C.intro = $('c_intro').value.split('\n').map(function(x){return x.trim();}).filter(Boolean);
+      C.values = $('c_values').value.split(/[,，、]/).map(function(x){return x.trim();}).filter(Boolean);
+      D.chatGreeting = $('c_greet').value.trim(); D.chatFallback = $('c_fb').value.trim();
+      saveDraft();
+    });
+  }
+
+  function dataJs(){ return '/* 悅聲專業音響 網站內容檔（由後台匯出 ' + new Date().toLocaleString('zh-TW') + '）*/\nwindow.SITE_DATA = ' + JSON.stringify(D, null, 2) + ';\n'; }
+  function renderExport(){
+    $('main').innerHTML = '<h2>匯出發布</h2>'+
+      '<ol class="steps"><li>按 <b>下載 data.js</b>（或複製下方內容存成 data.js）。</li><li>用新檔案取代網站資料夾裡的 <b>assets/data.js</b>，上傳到主機。</li><li>重新整理網站，就會看到更新後的內容。</li></ol>'+
+      '<div class="toolbar"><button class="btn gold" id="dl" type="button">下載 data.js</button><button class="btn" id="cp" type="button">複製內容</button><button class="btn" id="imp" type="button">匯入 data.js</button><input type="file" id="impFile" accept=".js,.json" hidden><button class="btn danger" id="reset" type="button">放棄草稿，還原正式內容</button></div>'+
+      '<textarea class="out" id="out" readonly aria-label="data.js 內容"></textarea>';
+    $('out').value = dataJs();
+    $('dl').onclick = function(){ var b = new Blob([dataJs()],{type:'text/javascript'}), a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='data.js'; document.body.appendChild(a); a.click(); a.remove(); toast('已下載 data.js'); };
+    $('cp').onclick = function(){ var t=$('out'); var p = navigator.clipboard ? navigator.clipboard.writeText(t.value) : Promise.reject(); p.then(function(){toast('已複製');}, function(){ t.focus(); t.select(); toast('已選取全部內容，請按 Ctrl+C 複製'); }); };
+    $('imp').onclick = function(){ $('impFile').click(); };
+    $('impFile').onchange = function(){ var f=this.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(){ try{ var txt=r.result.replace(/^[\s\S]*?window\.SITE_DATA\s*=\s*/,'').replace(/;\s*$/,''); var nd=JSON.parse(txt); if(!nd.company) throw 0; D=nd; saveDraft(); renderExport(); toast('已匯入'); }catch(e){ toast('檔案格式不對，請選擇後台匯出的 data.js'); } }; r.readAsText(f); };
+    $('reset').onclick = function(){ if(this.dataset.sure){ try{localStorage.removeItem('ys-site-draft-v2');}catch(e){} D=JSON.parse(JSON.stringify(window.SITE_DATA)); renderExport(); toast('已還原正式內容'); } else { this.dataset.sure='1'; this.textContent='再按一次確認還原'; } };
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

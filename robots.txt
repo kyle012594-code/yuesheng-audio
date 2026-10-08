@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Sitemap: https://kyle012594-code.github.io/yuesheng-audio/sitemap.xml

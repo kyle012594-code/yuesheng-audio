@@ -753,6 +753,11 @@ footer img{height:28px;width:auto}
 /* 首頁大圖視差 */
 .hero-img img{transition:transform .2s linear;will-change:transform}
 
+/* 線上估價區：按鈕不做動畫 */
+#quote .ripple{display:none}
+#quote .opt span,#quote .btn{transition:none}
+#quote .opt:active span,#quote .btn:active{transform:none}
+#quote .btn-gold:hover{box-shadow:none}
 @media (prefers-reduced-motion:reduce){
   .intro{display:none}.rv{opacity:1;transform:none}.sweep,.ripple{display:none}
 }
@@ -797,7 +802,7 @@ footer img{height:28px;width:auto}
     var io = new IntersectionObserver(function(es){
       es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
     }, {rootMargin:'0px 0px -8% 0px'});
-    var targets = document.querySelectorAll('.sec-head, .facts > div, .about-grid > *, .svc article, .partners > div, .gal figure, .qform, .qresult, .contact > *, .values span');
+    var targets = document.querySelectorAll('.sec-head, .facts > div, .about-grid > *, .svc article, .partners > div, .gal figure, .contact > *, .values span');
     [].forEach.call(targets, function(el, i){
       if(el.getBoundingClientRect().top > innerHeight){
         el.classList.add('rv');
@@ -828,7 +833,7 @@ footer img{height:28px;width:auto}
   document.addEventListener('pointerdown', function(e){
     if(reduce) return;
     var t = e.target.closest('.btn, .chip, .opt span, .opt, .pcard, .dcard .ph, .gimg, .chat-fab, .quick button, .chat form button');
-    if(!t) return; if(t.classList.contains('opt')) t = t.querySelector('span');
+    if(!t) return; if(t.closest('#quote')) return; if(t.classList.contains('opt')) t = t.querySelector('span');
     var r = t.getBoundingClientRect(), d = Math.max(r.width, r.height) * 2.2, s = document.createElement('span');
     s.className = 'ripple'; s.style.width = s.style.height = d + 'px';
     s.style.left = (e.clientX - r.left - d / 2) + 'px'; s.style.top = (e.clientY - r.top - d / 2) + 'px';

@@ -503,7 +503,7 @@ footer img{height:28px;width:auto}
   <form id="chatForm"><input class="inp" id="chatIn" placeholder="輸入問題，例如：報價怎麼算？" autocomplete="off"><button type="submit">送出</button></form>
 </section>
 
-<script src="assets/data.js?v=202610090615"></script>
+<script src="assets/data.js?v=202610090620"></script>
 <script>
 (function(){
   // 後台草稿：同一台電腦上，後台按「儲存草稿」後這裡會先顯示草稿
@@ -627,7 +627,7 @@ footer img{height:28px;width:auto}
   $('gridD').addEventListener('keydown', function(e){ if(e.key==='Enter') openProduct(e); });
   renderProducts();
 
-  // 估價：內部依公司歷年報價單計算，但畫面只顯示整場預估區間，不列品牌與單價
+  // 估價：內部依公司歷年報價單計算，但畫面只顯示整場參考起價，不列品牌與單價
   var Q = D.quote, TAX = (Q.taxPercent||5)/100, RANGE = (Q.rangePercent||15)/100;
   var byId = function(list, id){ return list.filter(function(x){ return x.id===id; })[0]; };
   var r1000 = function(n){ return Math.round(n/1000)*1000; };
@@ -692,9 +692,9 @@ footer img{height:28px;width:auto}
     ex.forEach(function(x){ sub += x.price * qExtra[x.id]; });
     var has = qAreas.length || ex.length;
     var lo = Math.floor(sub*(1-RANGE)/1000)*1000, hi = Math.ceil(sub*(1+RANGE)/1000)*1000;
-    var range = wan(lo) + ' – ' + wan(hi);
+    var range = wan(lo) + '起';
     $('qAmt').textContent = has ? 'NT$ ' + range : '—';
-    $('qSub').textContent = has ? '未稅參考區間，含 ' + (Q.taxPercent||5) + '% 營業稅約 ' + wan(lo*(1+TAX)) + ' – ' + wan(hi*(1+TAX)) : '選擇左邊的施作區域，這裡會顯示整場預估價格。';
+    $('qSub').textContent = has ? '未稅參考價，含 ' + (Q.taxPercent||5) + '% 營業稅約 ' + wan(lo*(1+TAX)) + '起' : '選擇左邊的施作區域，這裡會顯示整場預估價格。';
     $('qScope').innerHTML = has ? '<p class="lbl" style="margin:0 0 6px">本次估算範圍</p><ul>' +
       qAreas.map(function(a){ return '<li><b>'+esc(a.name)+'</b><span>'+esc(summary(a))+'</span></li>'; }).join('') +
       ex.map(function(x){ return '<li><b>'+esc(x.name)+'</b><span>'+qExtra[x.id]+' '+esc(x.unit)+'</span></li>'; }).join('') +

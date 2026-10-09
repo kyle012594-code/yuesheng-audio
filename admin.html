@@ -71,7 +71,7 @@ textarea.inp{min-height:90px;resize:vertical}
 </div>
 <div class="toast" id="toast" hidden></div>
 
-<script src="assets/data.js?v=202610090615"></script>
+<script src="assets/data.js?v=202610090620"></script>
 <script>
 (function(){
   var D;
@@ -102,7 +102,7 @@ textarea.inp{min-height:90px;resize:vertical}
       label:function(x){return x.name;}, sub:function(x){return x.mode==='pack' ? '整套設備・'+(x.items||[]).length+' 項' : '背景音樂・每 '+x.pingPerSpeaker+' 坪一支';},
       blank:{name:'新區域',mode:'bgm',ping:30,pingPerSpeaker:5,speaker:'mus8',items:[]},
       fields:[['name','區域名稱','text'],['mode','計算方式','select',[['bgm','背景音樂（依坪數算喇叭）'],['pack','整套設備（固定品項）']]],['ping','預設坪數（背景音樂用）','number'],['pingPerSpeaker','每支喇叭涵蓋坪數（背景音樂用）','number'],['speaker','喇叭（填「戶外防水造景」會固定使用，其他依設備等級）','select','speakers'],['items','整套設備品項（品名｜預設數量｜單位｜單價｜網站顯示名稱）','items']] },
-    grades: { title:'估價：設備等級', path:['quote','grades'], hint:'訪客可選的設備等級。背景音樂區域會改用該等級的喇叭；整套設備區域（會議室、KTV、劇院）的金額乘上倍率。網站只顯示整場預估區間，不會顯示品牌與單價。', idPrefix:'g',
+    grades: { title:'估價：設備等級', path:['quote','grades'], hint:'訪客可選的設備等級。背景音樂區域會改用該等級的喇叭；整套設備區域（會議室、KTV、劇院）的金額乘上倍率。網站只顯示整場參考起價，不會顯示品牌與單價。', idPrefix:'g',
       label:function(x){return x.name;}, sub:function(x){return '整套設備 × '+x.packMult;},
       blank:{name:'新等級',speaker:'mus8',packMult:1},
       fields:[['name','等級名稱','text'],['speaker','背景音樂用的喇叭','select','speakers'],['packMult','整套設備倍率','number']] },
@@ -228,7 +228,7 @@ textarea.inp{min-height:90px;resize:vertical}
       Q.work.map(function(w,i){ return '<fieldset style="border:1px solid var(--line);padding:12px;display:grid;gap:8px"><legend>'+esc(w.name)+'</legend><label>品名<input class="inp" data-w="'+i+'" data-f="name" value="'+esc(w.name)+'"></label><label>基本金額（元）<input class="inp" type="number" data-w="'+i+'" data-f="base" value="'+w.base+'"></label><label>每支喇叭加價（元）<input class="inp" type="number" data-w="'+i+'" data-f="perSpeaker" value="'+w.perSpeaker+'"></label></fieldset>'; }).join('')+
       '<label>變壓器單價（元）<input class="inp" type="number" id="qs_tr" value="'+Q.transformer.price+'"></label>'+
       '<label>營業稅（%）<input class="inp" type="number" id="qs_tax" value="'+Q.taxPercent+'"></label>'+
-      '<label>預估區間上下浮動（%）<input class="inp" type="number" id="qs_range" value="'+Q.rangePercent+'"></label>'+
+      '<label>起價比計算金額低幾 %（例：15 代表顯示計算金額的 85%）<input class="inp" type="number" id="qs_range" value="'+Q.rangePercent+'"></label>'+
       '<label>附註（目前網站不顯示，保留給之後的報價單用）<textarea class="inp" id="qs_terms" style="min-height:160px">'+esc(Q.terms.join('\n'))+'</textarea></label>'+
       '<label>估價區下方說明<textarea class="inp" id="qs_note">'+esc(Q.note)+'</textarea></label>'+
       '<div class="actions"><button class="btn gold" type="submit">套用修改</button></div></form>';

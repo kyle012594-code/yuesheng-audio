@@ -179,7 +179,7 @@ window.SITE_DATA = {
   quote: {
     note: "此為依公司歷年實際工程整理的參考起價（未稅），正式金額以現場勘查後提供的報價單為準。",
     taxPercent: 5,
-    rangePercent: 15,
+    rangePercent: 40,
     grades: [
       { id: "std", name: "標準", speaker: "mus8", packMult: 1 },
       { id: "pro", name: "進階", speaker: "top55", packMult: 1.25 },

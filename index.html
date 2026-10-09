@@ -503,7 +503,7 @@ footer img{height:28px;width:auto}
   <form id="chatForm"><input class="inp" id="chatIn" placeholder="輸入問題，例如：報價怎麼算？" autocomplete="off"><button type="submit">送出</button></form>
 </section>
 
-<script src="assets/data.js?v=202610081150"></script>
+<script src="assets/data.js?v=202610090615"></script>
 <script>
 (function(){
   // 後台草稿：同一台電腦上，後台按「儲存草稿」後這裡會先顯示草稿
@@ -636,7 +636,7 @@ footer img{height:28px;width:auto}
   function newArea(typeId, val){
     var t = byId(Q.areas, typeId); if(!t) return null;
     var same = qAreas.filter(function(a){ return a.type===typeId; }).length;
-    var a = { type: typeId, name: t.name.split('／')[0] + (same ? ' ' + (same+1) : '') };
+    var a = { type: typeId, name: t.name.split('／')[0].split('（')[0] + (same ? ' ' + (same+1) : '') };
     if(t.mode==='bgm'){ a.ping = val || t.ping || 30; a.spk = null; a.amp = 1; a.opt = {}; }
     else a.eq = t.items.map(function(it){ return it[1]; });
     return a;

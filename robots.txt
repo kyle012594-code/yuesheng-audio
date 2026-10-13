@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 Disallow: /admin.html
+Disallow: /quote/
 Sitemap: https://kyle012594-code.github.io/yuesheng-audio/sitemap.xml
